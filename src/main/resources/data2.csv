@@ -1,0 +1,22 @@
+ID,Name,Desc,Price
+500,Tire,20 inch Radial,69.95
+501,Glass,Front Window,120.00
+502,Radio,Stereo System,349.95
+503,Equalizer,Model 1234 for cars,99.95
+504,Speaker,300 Watt set of two,300.00
+505,Amplifier,For autos,84.99
+506,Sunglasses,Model ABC for men,400.00
+507,Sunglasses,Model XYZ for women,500.00
+508,Lamp,Head lamp, small car,20.00
+509,Lamp,Tail lamp, small car,35.50
+510,Lamp,Break lamp, small car,40.00
+508,Lamp,Head lamp, large car,120.00
+509,Lamp,Tail lamp, large car,135.50
+510,Lamp,Break lamp, large car,140.00
+508,Lamp,Head lamp, trucks,130.00
+509,Lamp,Tail lamp, trucks,145.50
+510,Lamp,Break lamp, trucks,150.00
+511,Tint,Pack of wo rolls, 19.95
+512,Soap,Car-wash soap, 4.95
+513,Tools,Repair kit, 91.50
+514,Tools,,40

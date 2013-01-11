@@ -1,0 +1,15 @@
+func stirl() {
+    return sqrt(2*$1*PI) * ($1/E)^$1*(1 + 1/(12*$1))
+}
+
+stirl(10)
+
+stirl(20)
+
+func fac() if ($1 <= 0) return 1 else return  $1 * fac($1-1)
+
+i = 9
+
+while ((i = i+1) <= 20) {
+    print i, "  ", fac(i)/stirl(i), "\n"
+}

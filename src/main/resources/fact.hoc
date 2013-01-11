@@ -1,0 +1,9 @@
+func factorial() {
+    if ($1 == 0) {
+        return 1
+    } else {
+        return $1 * factorial($1 - 1)
+    }
+}
+
+factorial(6)
