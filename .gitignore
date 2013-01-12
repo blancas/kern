@@ -2,7 +2,7 @@ target
 codox
 *.jar
 *.class
-.lein-failures
+.lein*
 *~
 \#*
 .project
