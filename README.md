@@ -9,13 +9,11 @@ by Daan Leijen, as well as work by Graham Hutton, Erik Meijer, and William Burge
 The name Kern is a token of appreciation to Brian Kernighan (now at Princeton) 
 for his work on programming languages.
 
-Daan Leijen
+Daan Leijen,
 [Parsec, a fast combinator parser](http://legacy.cs.uu.nl/daan/download/parsec/parsec.pdf)
-
-Graham Hutton and Erik Meijer
+Graham Hutton and Erik Meijer,
 [Monadic Parser Combinators](http://eprints.nottingham.ac.uk/237/1/monparsing.pdf)
-
-William H. Burge
+William H. Burge,
 Recursive Programming Techniques, Addison-Wesley, 1975
 
 ## Features
@@ -83,6 +81,22 @@ Now we evaluate the *expr* combinator with various inputs:
 (value expr "0.725 * (17 + 11 % 4)")
 ;; 14.5
 ```
+
+## Documentation
+
+To generate the documentation in the `codox` directory:
+
+    lein doc
+
+## Building Kern
+
+To build Kern in the `target` directory:
+
+    mvn package
+
+To build Kern and install it the local Maven repository:
+
+    mvn install
 
 ## License
 
