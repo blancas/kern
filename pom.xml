@@ -23,6 +23,12 @@
     </developer>
   </developers>
 
+  <scm>
+    <connection>scm:git:git@github.com:blancas/kern.git</connection>
+    <developerConnection>scm:git:git@github.com:blancas/kern.git</developerConnection>
+    <url>git@github.com:blancas/kern.git</url>
+  </scm>
+
   <licenses>
     <license>
       <name>Eclipse Public License 1.0</name>
