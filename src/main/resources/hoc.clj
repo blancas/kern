@@ -76,18 +76,15 @@ Prentice-Hall, 1983"}
 ;;  |                        PARSER                          |
 ;;  +--------------------------------------------------------+
 
-(def factor
-  (<|> (between (sym \() (sym \)) (fwd expr))
-       string-literal rvalue number argument))
-
-(def unary (prefix1* :UNIOP  factor uni-op))
-(def power (chainr1* :BINOP  unary  pow-op))
-(def term  (chainl1* :BINOP  power  mul-op))
-(def sum   (chainl1* :BINOP  term   add-op))
-(def relex (chainl1* :BINOP  sum    rel-op))
-(def orex  (chainl1* :BINOP  relex  or-op))
-(def andex (chainl1* :BINOP  orex   and-op))
-(def expr  (chainr1* :ASSIGN andex  equ-op))
+(def factor (<|> (parens (fwd expr)) string-literal rvalue number argument))
+(def unary  (prefix1* :UNIOP  factor uni-op))
+(def power  (chainr1* :BINOP  unary  pow-op))
+(def term   (chainl1* :BINOP  power  mul-op))
+(def sum    (chainl1* :BINOP  term   add-op))
+(def relex  (chainl1* :BINOP  sum    rel-op))
+(def orex   (chainl1* :BINOP  relex  or-op))
+(def andex  (chainl1* :BINOP  orex   and-op))
+(def expr   (chainr1* :ASSIGN andex  equ-op))
 
 (def block-stmt
   (bind [_ (sym \{) _ new-line ss (many (<< (fwd stmt) ending)) _ (sym \})]

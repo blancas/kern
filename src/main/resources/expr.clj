@@ -9,6 +9,7 @@
 (load "expr")
 (ns expr)
 (run expr "3 + 4")
+(run expr "2 * (5 + 5)")
 (run expr "atan(0.3+0.12345)*3+3*4")
 (run expr "sin(0.5) >= sqrt(3)")
 )
@@ -58,7 +59,7 @@
 (def factor
   "Evaluates a number (double), a call to a buil-in function, or an
    expression in parens to (for example) change the order of evaluation."
-  (<|> float-lit funcall (between (sym \() (sym \)) (fwd expr))))
+  (<|> float-lit funcall (parens (fwd expr))))
 
 ;; Chain calls parse multiple occurrences of a kind of operator
 ;; working on operands that may be expressions. In this case,
