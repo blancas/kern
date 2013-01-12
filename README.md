@@ -11,8 +11,10 @@ for his work on programming languages.
 
 Daan Leijen,
 [Parsec, a fast combinator parser](http://legacy.cs.uu.nl/daan/download/parsec/parsec.pdf)
+
 Graham Hutton and Erik Meijer,
 [Monadic Parser Combinators](http://eprints.nottingham.ac.uk/237/1/monparsing.pdf)
+
 William H. Burge,
 Recursive Programming Techniques, Addison-Wesley, 1975
 
