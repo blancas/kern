@@ -578,11 +578,6 @@ Addison-Wesley, 1975"
     (scan)))
 
 
-(defn ++
-  "Parses p, then q; concatenates the results in a vector."
-  [p q] (>>= p (fn [x] (>>= q (fn [y] (return (reduce conj [x] y)))))))
-
-
 (defn <+>
   "Applies one or more parsers; flattens the result and
    converts it to a string."

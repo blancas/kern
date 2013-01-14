@@ -2994,38 +2994,6 @@
 	           em  => "unexpected \\*\nexpecting \\X")))
 
 
-(deftest test-1100
-  (let [s1 (parse (++ letter (many digit)) "A123")]
-    (fact "++ - parses a letter and three digits; the result is a flat list"
-	  (:input s1)  =>  empty?
-	  (:value s1)  =>  (seq "A123")
-	  (:ok    s1)  =>  true
-	  (:empty s1)  =>  false
-	  (:error s1)  =>  nil)))
-
-
-(deftest test-1105
-  (let [s1 (parse (++ letter (many digit)) "0123")
-    	em (get-msg-str (:error s1))]
-    (fact "++ - the first parser fails"
-	  (:input s1)  =>  (seq "0123")
-	  (:value s1)  =>  nil
-	  (:ok    s1)  =>  false
-	  (:empty s1)  =>  true
-	           em  => "unexpected \\0\nexpecting letter")))
-
-
-(deftest test-1110
-  (let [s1 (parse (++ letter (many1 digit)) "A*")
-    	em (get-msg-str (:error s1))]
-    (fact "++ - the second parser fails"
-	  (:input s1)  =>  [\*]
-	  (:value s1)  =>  nil
-	  (:ok    s1)  =>  false
-	  (:empty s1)  =>  false
-	           em  => "unexpected \\*\nexpecting digit")))
-
-
 (deftest test-1115
   (let [s1 (parse (<+> (sym* \-) digit) "-1")]
     (fact "<+> - cats from two parsers"
