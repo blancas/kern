@@ -4,7 +4,7 @@
 	    :url "http://www.eclipse.org/legal/epl-v10.html"}
   :url "https://github.com/blancas/kern"
   :plugins [[codox "0.6.4"]]
-  :dependencies [[org.clojure/clojure "1.4.0"] [midje "1.4.0"]]
+  :dependencies [[org.clojure/clojure "1.4.0"]]
   :source-paths ["src/main/clojure" "src/main/resources"]
   :codox {:sources ["src/main/clojure"] :output-dir "codox"}
   :jvm-opts ["-Dfile.encoding=UTF-8"])
