@@ -86,19 +86,11 @@ Now we evaluate the *expr* combinator with various inputs:
 
 ## Documentation
 
-To generate the documentation in the `codox` directory:
+Kern is documented in the project's [[Wiki|https://github.com/blancas/kern/wiki]].
+
+To generate the internal documentation in the `codox` directory:
 
     lein doc
-
-## Building Kern
-
-To build Kern in the `target` directory:
-
-    mvn package
-
-To build Kern and install it the local Maven repository:
-
-    mvn install
 
 ## License
 
