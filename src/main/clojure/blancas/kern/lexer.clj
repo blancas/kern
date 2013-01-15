@@ -657,16 +657,16 @@
 	(>> (word "nil" "null") (return nil))
 	
 	parens
-	(fn [p] (between (sym \() (sym \)) p))
+	(fn [p] (between (sym \() (sym \)) (lexeme p)))
 
 	braces
-	(fn [p] (between (sym \{) (sym \}) p))
+	(fn [p] (between (sym \{) (sym \}) (lexeme p)))
 
 	angles
-	(fn [p] (between (sym \<) (sym \>) p))
+	(fn [p] (between (sym \<) (sym \>) (lexeme p)))
 	
 	brackets
-	(fn [p] (between (sym \[) (sym \]) p))
+	(fn [p] (between (sym \[) (sym \]) (lexeme p)))
 	
 	semi
 	(sym \;)
