@@ -1,3 +1,5 @@
+# The factorial function.
+
 func factorial() {
     if ($1 == 0) {
         return 1

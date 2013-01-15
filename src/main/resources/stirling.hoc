@@ -1,3 +1,5 @@
+# Stirling function
+
 func stirl() {
     return sqrt(2*$1*PI) * ($1/E)^$1*(1 + 1/(12*$1))
 }
@@ -6,7 +8,11 @@ stirl(10)
 
 stirl(20)
 
+# Factorial function
+
 func fac() if ($1 <= 0) return 1 else return  $1 * fac($1-1)
+
+# Compare factorial vs. stirling
 
 i = 9
 

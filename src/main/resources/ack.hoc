@@ -1,3 +1,9 @@
+# Ackermann function
+# A(m.n) =  
+#    n + 1              if m = 0
+#    A(m-1, 1)          if M > 0 and n = 0
+#    A(m-1, A(m, n-1))  if m > 0 and n > 0
+
 func ack() {
     if ($1 == 0) return $2+1
     if ($2 == 0) return ack($1-1, 1)
