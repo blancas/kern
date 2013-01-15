@@ -159,11 +159,12 @@
   ([cs & more] nil))
 
 (defn* word
-  "Parses a specific string, delimited by letter. If more than
-   one are given it will try each choice in turn. Compares
-   according to :case-sensitive. Calls (trim) afterwards."
-  ([letter cs] nil)
-  ([letter cs & more] nil))
+  "Parses a specific string; must be delimited by any character not
+   parsed by :identifier-letter. If more than one are given it will
+   try each choice in turn. Compares according to :case-sensitive.
+   Calls (trim) afterwards."
+  ([cs] nil)
+  ([cs & more] nil))
 
 (defn* identifier
   "Parses an unquoted string suitable for an identifier or a name.
