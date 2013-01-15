@@ -35,7 +35,7 @@ Recursive Programming Techniques, Addison-Wesley, 1975
 Leiningen:
 
 ```clojure
-[org.blancas/kern "0.1.0"]
+[org.blancas/kern "0.5.0"]
 ```
 
 Maven:
@@ -44,7 +44,7 @@ Maven:
 <dependency>
   <groupId>org.blancas</groupId>
   <artifactId>kern</artifactId>
-  <version>0.1.0</version>
+  <version>0.5.0</version>
 </dependency>
 ```
 
@@ -72,7 +72,6 @@ Grammar for simple arithmetic expressions:
 (def term   (chainl1 factor mul-op))
 (def expr   (chainl1 term   add-op))
 ```
-
 Now we evaluate the *expr* combinator with various inputs:
 
 ```clojure
@@ -86,7 +85,7 @@ Now we evaluate the *expr* combinator with various inputs:
 
 ## Documentation
 
-Kern is documented in the project's [Wiki](https://github.com/blancas/kern/wiki).
+Kern is documented in the [Wiki](https://github.com/blancas/kern/wiki).
 
 To generate the internal documentation (in the `codox` directory):
 
