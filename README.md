@@ -50,37 +50,38 @@ Maven:
 
 ## Sample Usage
 
-Grammar for simple arithmetic expressions:
+Parsing JSON data.
 
-    expr    ::=  term (add-op term)*
-    term    ::=  factor (mul-op factor)*
-    factor  ::=  float | ( expr )
-
+    pair    ::=  string ':' json
+    array   ::=  '[' (json (',' json)*)* ']'
+    object  ::=  '{' (pair (',' pair)*)* '}'
+    json    ::=  string | number | object | array | true | false | null
 ```clojure
 (use '[blancas.kern core expr]
      '[blancas.kern.lexer.basic])
 
-(declare expr)
+(declare json)
 
-(def mul-op (bind [op (one-of "*/%")] 
-              (return ({\* * \/ / \% mod} op))))
+(def pair (bind [f string-lit _ (sym \:) v (fwd json)]
+            (return [f v])))
 
-(def add-op (bind [op (one-of "+-")] 
-              (return ({\+ + \- -} op))))
+(def array (brackets
+             (bind [elements (comma-sep (fwd json))]
+               (return (vec elements)))))
+  
+(def object (braces
+              (bind [fields (comma-sep pair)]
+                (return (apply hash-map (reduce concat [] fields))))))
 
-(def factor (<|> float-lit (parens (fwd expr))))
-(def term   (chainl1 factor mul-op))
-(def expr   (chainl1 term   add-op))
+(def json (<|> string-lit dec-lit float-lit object array bool-lit nil-lit))
 ```
-Now we evaluate the *expr* combinator with various inputs:
+Evaluate the `json` combinator:
 
 ```clojure
-(value expr "3 + 4")
-;; 7.0
-(value expr "2.5 * 4 + 6 / 1.5 - 3")
-;; 11.0
-(value expr "0.725 * (17 + 11 % 4)")
-;; 14.5
+(run json "{\"fst\": \"Joe\", \"lst\": \"Hacks\",\"id\":1122}")
+;; {"fst" "Joe", "lst" "Hacks", "id" 1122}
+(run json "{\"id\":1122,\"scores\":[400,125,999],\"top\":true}")
+;; {"scores" [400 125 999], "top" true, "id" 1122}
 ```
 
 ## Documentation
