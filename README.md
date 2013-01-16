@@ -85,7 +85,7 @@ Now we evaluate the *expr* combinator with various inputs:
 
 ## Documentation
 
-Kern is documented in the [Wiki](https://github.com/blancas/kern/wiki).
+Kern is documented in the [Wiki](https://github.com/blancas/kern/wiki/Kern-Docs).
 
 To generate the internal documentation (in the `codox` directory):
 
