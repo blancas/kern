@@ -57,7 +57,7 @@ Parsing JSON data.
     object  ::=  '{' (pair (',' pair)*)* '}'
     json    ::=  string | number | object | array | true | false | null
 ```clojure
-(use '[blancas.kern core expr]
+(use '[blancas.kern.core]
      '[blancas.kern.lexer.basic])
 
 (declare json)
@@ -75,7 +75,7 @@ Parsing JSON data.
 
 (def json (<|> string-lit dec-lit float-lit object array bool-lit nil-lit))
 ```
-Evaluate the `json` combinator:
+Evaluate the `json` parser:
 
 ```clojure
 (run json "{\"fst\": \"Joe\", \"lst\": \"Hacks\",\"id\":1122}")
