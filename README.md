@@ -57,8 +57,8 @@ Parsing JSON data.
     object  ::=  '{' (pair (',' pair)*)* '}'
     json    ::=  string | number | object | array | true | false | null
 ```clojure
-(use '[blancas.kern.core]
-     '[blancas.kern.lexer.basic])
+(use 'blancas.kern.core
+     'blancas.kern.lexer.basic)
 
 (declare json)
 
