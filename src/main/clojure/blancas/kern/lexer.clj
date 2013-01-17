@@ -208,22 +208,22 @@
   [] nil)
 
 (defn* dec-lit
-  "Parses a decimal number as long or BigInt depending on the
+  "Parses a decimal number as Long or BigInt depending on the
    magnitude or if it ends with N. Calls (trim) afterward."
   [] nil)
 
 (defn* oct-lit
-  "Parses an octal number as long or BigInt depending on the
+  "Parses an octal number as Long or BigInt depending on the
    magnitude or if it ends with N. Calls (trim) afterward."
   [] nil)
 
 (defn* hex-lit
-  "Parses a hexadecimal number as long or BigInt depending on the
+  "Parses a hexadecimal number as Long or BigInt depending on the
    magnitude or if it ends with N. Calls (trim) afterward."
   [] nil)
 
 (defn* float-lit
-  "Parses a floating-point number as double or BigDecimal depending
+  "Parses a floating-point number as Double or BigDecimal depending
    on the magnitude or if it ends with M. It cannot start with a
    period. The first period found must be followed by at least one
    digit. Calls (trim) afterward."
