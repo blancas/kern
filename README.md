@@ -86,7 +86,7 @@ Evaluate the `json` parser:
 
 ## Documentation
 
-Kern is documented in the [Wiki](https://github.com/blancas/kern/wiki/Kern-Docs).
+Kern is documented in the [Wiki](https://github.com/blancas/kern/wiki).
 
 To generate the internal documentation (in the `codox` directory):
 
