@@ -9,7 +9,13 @@
 (ns ^{:doc "Support for the evaluation of expressions."
       :author "Armando Blancas"}
   blancas.kern.expr
-  (:use [blancas.kern core i18n]))
+  (:use [blancas.kern core i18n]
+	[blancas.kern.lexer.c-style]))
+
+
+;; +-------------------------------------------------------------+
+;; |                  Expression Chaining.                       |
+;; +-------------------------------------------------------------+
 
 
 (defn chainl1
@@ -139,3 +145,47 @@
   "Like postfix1*, but both the operator and operand are optional.
    If no operand is given, it returns the default value a."
   [tok p op a] (<|> (postfix1* tok p op) (return a)))
+
+
+;; +-------------------------------------------------------------+
+;; |                      Operator parsers.                      |
+;; +-------------------------------------------------------------+
+
+
+(def pow-op
+  "Parses the POW operator."
+  (>> (sym \^) (return #(Math/pow %1 %2))))
+
+
+(def uni-op
+  "Unary operator: logical not or numeric minus."
+  (bind [op (one-of "!-")]
+    (return ({\! not \- -} op))))
+
+
+(def mul-op
+  "Multiplicative operator: multiplication, division, or modulo."
+  (bind [op (one-of "*/%")] 
+    (return ({\* * \/ / \% mod} op))))
+
+
+(def add-op
+  "Additive operator: addition or subtraction."
+  (bind [op (one-of "+-")] 
+    (return ({\+ + \- -} op))))
+
+
+(def rel-op
+  "Parses one of the relational operators."
+  (bind [op (token "==" "!=" ">=" "<=" ">" "<")]
+    (return ({"==" = "!=" not= ">=" >= "<=" <= ">" > "<" <} op))))
+
+
+(def and-op
+  "Parses the logical AND operator."
+  (>> (token "&&") (return #(and %1 %2))))
+
+
+(def or-op
+  "Parses the logical OR operator."
+  (>> (token "||") (return #(or %1 %2))))

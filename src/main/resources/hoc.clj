@@ -49,27 +49,6 @@ Prentice-Hall, 1983"}
       (return {:token :FUNCALL :name id :args es}))))
 
 (def ending (<|> (skip new-line trim) eof))
-
-(def pow-op (>> (sym \^) (return #(Math/pow %1 %2))))
-
-(def uni-op
-  (bind [op (one-of "!-")]
-    (return ({\! not \- -} op))))
-
-(def mul-op
-  (bind [op (one-of "*/%")] 
-    (return ({\* * \/ / \% mod} op))))
-
-(def add-op
-  (bind [op (one-of "+-")] 
-    (return ({\+ + \- -} op))))
-
-(def rel-op
-  (bind [op (token "==" "!=" ">=" "<=" ">" "<")]
-    (return ({"==" = "!=" not= ">=" >= "<=" <= ">" > "<" <} op))))
-
-(def and-op (>> (token "&&") (return #(and %1 %2))))
-(def or-op  (>> (token "||") (return #(or %1 %2))))
 (def equ-op (>> (sym \=) (return nil)))
 
 ;;  +--------------------------------------------------------+
@@ -87,8 +66,8 @@ Prentice-Hall, 1983"}
 (def expr   (chainr1* :ASSIGN andex  equ-op))
 
 (def block-stmt
-  (bind [_ (sym \{) _ new-line ss (many (<< (fwd stmt) ending)) _ (sym \})]
-    (return {:token :BLOCK :seq ss})))
+  (braces (bind [_ new-line ss (many (<< (fwd stmt) ending))]
+            (return {:token :BLOCK :seq ss}))))
 
 (def loop-stmt
   (bind [_ (word "while") e (parens expr) s stmt]

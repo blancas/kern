@@ -16,38 +16,13 @@
 
 (declare expr)
 
-;; The following functions parse an operator and produce the
-;; function that corresponds to that operator.
-
-(def pow-op (>> (sym \^) (return #(Math/pow %1 %2))))
-
-(def uni-op
-  (bind [op (one-of "!-")]
-    (return ({\! not \- -} op))))
-
-(def mul-op
-  (bind [op (one-of "*/%")] 
-    (return ({\* * \/ / \% mod} op))))
-
-(def add-op
-  (bind [op (one-of "+-")] 
-    (return ({\+ + \- -} op))))
-
-(def rel-op
-  (bind [op (token "==" "!=" ">=" "<=" ">" "<")]
-    (return ({"==" = "!=" not= ">=" >= "<=" <= ">" > "<" <} op))))
-
-(def and-op (>> (token "&&") (return #(and %1 %2))))
-
-(def or-op (>> (token "||") (return #(or %1 %2))))
-
 (def fun-tbl
   "Definition of built-in functions."
   {"abs"   #(Math/abs %)   "atan" #(Math/atan %)      "cos"  #(Math/cos %)
    "exp"   #(Math/exp %)   "int"  #(Math/round %)     "log"  #(Math/log %)
    "log10" #(Math/log10 %) "sin"  #(Math/sin %)       "sqrt" #(Math/sqrt %)
    "tan"   #(Math/tan %)   "tanh" #(Math/tanh %)      "ceil" #(Math/ceil %)
-   "floor" #(Math/floor %) "deg"  #(Math/toDegrees %) "rad" #(Math/toRadians %)})
+   "floor" #(Math/floor %) "deg"  #(Math/toDegrees %) "rad"  #(Math/toRadians %)})
 
 (def funcall
 "This parser corresponds a syntax rule: FUN := ID (expr)
@@ -66,7 +41,7 @@
 ;; uni-op operators have the highest precedence while the and-op
 ;; operator has the lowest.
 
-(def unary (prefix1 factor uni-op))  ;; -(10)
+(def unary (prefix1 factor uni-op))  ;; -(10), !(3>0)
 (def power (chainr1 unary  pow-op))  ;; 2^32
 (def term  (chainl1 power  mul-op))  ;; 3 * 34 * ...
 (def sum   (chainl1 term   add-op))  ;; 5 + 2*3 + ...
