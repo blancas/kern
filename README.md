@@ -62,7 +62,7 @@ Parsing JSON data.
 
 (declare json)
 
-(def pair (bind [f string-lit _ (sym \:) v (fwd json)]
+(def pair (bind [f string-lit _ colon v (fwd json)]
             (return [f v])))
 
 (def array (brackets
