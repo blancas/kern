@@ -553,14 +553,12 @@ Addison-Wesley, 1975"
 
     
 (defn look-ahead
-  "Applies p; if it succeeds it consumes no input."
+  "Applies p and returns the result; it consumes no input."
   [p]
   (fn [s]
     (let [st (p s)]
-      (if (not (or (:ok st) (:empty st)))
-        st
-        (assoc st :input (:input s))))))
-
+      (assoc s :ok (:ok st) :value (:value st)))))
+  
 
 (defn not-followed-by
   "Succeeds only if p fails; consumes no input."

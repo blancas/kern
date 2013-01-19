@@ -2810,7 +2810,7 @@
 	  (:input s1)  =>  (seq "12345678")
 	  (:value s1)  =>  8
 	  (:ok    s1)  =>  true
-	  (:empty s1)  =>  false
+	  (:empty s1)  =>  true
 	  (:error s1)  =>  nil)))
 
 
@@ -2825,25 +2825,23 @@
 
 
 (deftest test-1025
-  (let [s1 (parse (look-ahead digit) "*")
-    	em (get-msg-str (:error s1))]
+  (let [s1 (parse (look-ahead digit) "*")]
     (fact "look-ahead - fails consuming no input"
 	  (:input s1)  =>  [\*]
 	  (:value s1)  =>  nil
 	  (:ok    s1)  =>  false
 	  (:empty s1)  =>  true
-	           em  => "unexpected \\*\nexpecting digit")))
+	  (:error s1)  =>  nil)))
 
 
 (deftest test-1030
-  (let [s1 (parse (look-ahead (>> letter digit)) "A*")
-    	em (get-msg-str (:error s1))]
+  (let [s1 (parse (look-ahead (>> letter digit)) "A*")]
     (fact "look-ahead - fails consuming no input"
-	  (:input s1)  =>  [\*]
+	  (:input s1)  =>  [\A \*]
 	  (:value s1)  =>  nil
 	  (:ok    s1)  =>  false
-	  (:empty s1)  =>  false
-	           em  => "unexpected \\*\nexpecting digit")))
+	  (:empty s1)  =>  true
+	  (:error s1)  =>  nil)))
 
 
 (deftest test-1035
