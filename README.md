@@ -10,7 +10,7 @@ Hutton, Erik Meijer, and William Burge.
 
 * Purely functional implementation based on a custom state monad.
 * Lexer support for various language styles: C, Java, Haskell, Shell.
-* Support for parsing and evaluation of arithmetic expressions.
+* Support for parsing and evaluating expressions.
 * Ability to produce accurate and detailed error messages.
 * A simple, dynamic i18n scheme for error messages.
 * Access to the parser's internal state from client code.
