@@ -4,30 +4,24 @@ Kern is a library of parser combinators for Clojure. It is useful for
 implementing recursive-descent parsers based on predictive LL(1) grammars 
 with on-demand, unlimited look-ahead.
 
-The main inspiration for Kern comes from Parsec, a Haskell library written 
-by Daan Leijen, as well as work by Graham Hutton, Erik Meijer, and William Burge.
-The name Kern is a token of appreciation to Brian Kernighan (now at Princeton) 
-for his work on programming languages.
+The inspiration for Kern comes from Parsec, a Haskell library written by Daan Leijen, 
+and from work by Graham Hutton, Erik Meijer, and William Burge.
 
 Daan Leijen,
-[Parsec, a fast combinator parser](http://legacy.cs.uu.nl/daan/download/parsec/parsec.pdf)
-
+[Parsec, a fast combinator parser](http://legacy.cs.uu.nl/daan/download/parsec/parsec.pdf)  
 Graham Hutton and Erik Meijer,
-[Monadic Parser Combinators](http://eprints.nottingham.ac.uk/237/1/monparsing.pdf)
-
+[Monadic Parser Combinators](http://eprints.nottingham.ac.uk/237/1/monparsing.pdf)  
 William H. Burge,
 Recursive Programming Techniques, Addison-Wesley, 1975
 
 ## Features
 
 * Purely functional implementation based on a custom state monad.
-* A complete set of parser combinators for common tasks.
 * Lexer support for various language styles: C, Java, Haskell, Shell.
-* Support for arithmetic expressions producing values or syntax nodes.
+* Support for parsing and evaluation of arithmetic expressions.
 * Ability to produce accurate and detailed error messages.
 * A simple, dynamic i18n scheme for error messages.
 * Access to the parser's internal state from client code.
-* Storage, modification and retrieval of client data.
 * Sample parsers in `src/main/resources`.
 
 ## Setup
