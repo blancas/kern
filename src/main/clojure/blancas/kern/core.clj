@@ -557,7 +557,7 @@ Addison-Wesley, 1975"
   [p]
   (fn [s]
     (let [st (p s)]
-      (assoc s :ok (:ok st) :value (:value st)))))
+      (assoc s :value (:value st)))))
   
 
 (defn not-followed-by

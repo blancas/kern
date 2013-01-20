@@ -2829,7 +2829,7 @@
     (fact "look-ahead - fails consuming no input"
 	  (:input s1)  =>  [\*]
 	  (:value s1)  =>  nil
-	  (:ok    s1)  =>  false
+	  (:ok    s1)  =>  true
 	  (:empty s1)  =>  true
 	  (:error s1)  =>  nil)))
 
@@ -2839,7 +2839,7 @@
     (fact "look-ahead - fails consuming no input"
 	  (:input s1)  =>  [\A \*]
 	  (:value s1)  =>  nil
-	  (:ok    s1)  =>  false
+	  (:ok    s1)  =>  true
 	  (:empty s1)  =>  true
 	  (:error s1)  =>  nil)))
 
