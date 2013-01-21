@@ -1,4 +1,4 @@
-(defproject org.blancas/kern "0.1.0"
+(defproject org.blancas/kern "0.5.0"
   :description "A Parser Combinators Library"
   :license {:name "Eclipse Public License"
 	    :url "http://www.eclipse.org/legal/epl-v10.html"}
