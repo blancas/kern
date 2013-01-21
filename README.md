@@ -74,7 +74,9 @@ Evaluate the `json` parser:
 
 Kern is documented in the [Wiki](https://github.com/blancas/kern/wiki).
 
-To generate the internal documentation (in the `codox` directory):
+Download the Codox [Kern API](https://www.dropbox.com/s/e9dz84cvehxkuax/kern-doc-0.5.0.zip).
+
+To generate the API docs (in the `codox` directory):
 
     lein doc
 
