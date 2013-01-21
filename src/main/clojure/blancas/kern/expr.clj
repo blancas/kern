@@ -158,7 +158,7 @@
 
 
 (def uni-op
-  "Unary operator: logical not or numeric minus."
+  "Unary prefix operator: logical not or numeric minus."
   (bind [op (one-of "!-")]
     (return ({\! not \- -} op))))
 
@@ -166,7 +166,7 @@
 (def mul-op
   "Multiplicative operator: multiplication, division, or modulo."
   (bind [op (one-of "*/%")] 
-    (return ({\* * \/ / \% mod} op))))
+    (return ({\* * \/ quot \% mod} op))))
 
 
 (def add-op
