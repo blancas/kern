@@ -48,7 +48,17 @@ Prentice-Hall, 1983"}
       (return {:token :IDENT :value id})
       (return {:token :FUNCALL :name id :args es}))))
 
+(defn ignore
+  "Applies p; if it succeeds it consumes no input."
+  [p]
+  (fn [s]
+    (let [st (p s)]
+      (if (not (or (:ok st) (:empty st)))
+        st
+        (assoc st :input (:input s))))))
+
 (def ending (<|> (skip new-line trim) eof))
+
 (def equ-op (>> (sym \=) (return nil)))
 
 ;;  +--------------------------------------------------------+
@@ -90,7 +100,7 @@ Prentice-Hall, 1983"}
   (bind [_ (word "return") e (optional expr)]
     (return {:token :RETURN :value e})))
 
-(def void-stmt (look-ahead new-line))
+(def void-stmt (ignore new-line))
 
 (def stmt (<|> block-stmt loop-stmt cond-stmt read-stmt
 	       print-stmt return-stmt void-stmt expr))
