@@ -808,18 +808,18 @@ Addison-Wesley, 1975"
 
 
 (defn get-state
-  "Get the user state from a parser state."
+  "Get the user state from the parser state record."
   [s] (assoc s :value (:user s) :ok true :empty true :error nil))
 
 
 (defn put-state
-  "Put u as the new value for user state."
+  "Put u as the new value for user state in the parser state record."
   [u] (fn [s] (assoc s :ok true :empty true :user u :error nil)))
 
 
 (defn modify-state
-  "Modify the user state with the result of f, which takes the old value
-   plus any additional arguments."
+  "Modify the user state with the result of f, which takes the old
+   user state plus any additional arguments."
   [f & more]
   (fn [s]
     (let [u (apply f (:user s) more)]
@@ -833,7 +833,7 @@ Addison-Wesley, 1975"
 
 (defn set-input
   "Sets the input stream in a parser state."
-  [in] (fn [s] (assoc s :input (seq in) :ok true :empty true  :error nil)))
+  [in] (fn [s] (assoc s :input (seq in) :ok true :empty true :error nil)))
 
 
 (defn get-position
