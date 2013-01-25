@@ -64,9 +64,9 @@ Parsing JSON data.
 Evaluate the `json` parser:
 
 ```clojure
-(run json "{\"fst\": \"Joe\", \"lst\": \"Hacks\",\"id\":1122}")
+(run json "{\\"fst\\": \\"Joe\\", \\"lst\\": \\"Hacks\\",\\"id\\":1122}")
 ;; {"fst" "Joe", "lst" "Hacks", "id" 1122}
-(run json "{\"id\":1122,\"scores\":[400,125,999],\"top\":true}")
+(run json "{\\"id\\":1122,\\"scores\\":[400,125,999],\\"top\\":true}")
 ;; {"scores" [400 125 999], "top" true, "id" 1122}
 ```
 
