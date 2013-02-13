@@ -1053,12 +1053,12 @@
 
 
   (deftest test-0280-60
-  (let [in "Software,Tooling,495.95,0.00,,15,,xyz"
-	s1 (parse (split-on ",") in)]
-    (fact "field - breaks the string into fields; some are empty"
-	  (:value s1)  =>  ["Software" "Tooling" "495.95" "0.00" "15" "xyz"]
-	  (:ok    s1)  =>  true
-	  (:empty s1)  =>  false)))
+    (let [in "Software,Tooling,495.95,0.00,,15,,xyz"
+	  s1 (parse (split-on ",") in)]
+      (fact "field - breaks the string into fields; some are empty"
+	    (:value s1)  =>  ["Software" "Tooling" "495.95" "0.00" "15" "xyz"]
+	    (:ok    s1)  =>  true
+	    (:empty s1)  =>  false)))
 
 
 (deftest test-0280-65
@@ -1068,6 +1068,16 @@
 	  (:value s1)  =>  ["Now" "is" "the" "time" "Or" "is" "it" "Yes" "yes" "that's" "it"]
 	  (:ok    s1)  =>  true
 	  (:empty s1)  =>  false)))
+
+
+(deftest test-0280-70
+  (fact "mark parses a punctuation mark."
+	(value mark "!") => \!
+	(value mark "@") => \@
+	(value mark "*") => \*
+	(value mark ":") => \:
+	(value mark "/") => \/
+	(value mark ".") => \.))
 
 
 ;; +-------------------------------------------------------------+
@@ -2842,6 +2852,25 @@
 	  (:ok    s1)  =>  true
 	  (:empty s1)  =>  true
 	  (:error s1)  =>  nil)))
+
+
+(deftest test-1030-05
+  (let [s1 (parse (predict (sym* \=)) "=10")]
+    (fact "predict - if p succeeds it consumes no input"
+	  (:input s1)  =>  [\= \1 \0]
+	  (:value s1)  =>  \=
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false
+	  (:error s1)  =>  nil)))
+
+
+(deftest test-1030-10
+  (let [s1 (parse (predict (sym* \=)) "<10")]
+    (fact "predict - if p succeeds it consumes no input"
+	  (:input s1)  =>  [\< \1 \0]
+	  (:value s1)  =>  nil?
+	  (:ok    s1)  =>  false?
+	  (:empty s1)  =>  true?)))
 
 
 (deftest test-1035

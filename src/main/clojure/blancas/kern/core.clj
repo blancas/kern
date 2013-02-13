@@ -560,6 +560,15 @@ Addison-Wesley, 1975"
       (assoc s :value (:value st)))))
   
 
+(defn predict
+  "Applies p; if it succeeds it consumes no input."
+  [p]
+  (fn [s]
+    (let [st (p s)]
+      (if (not (or (:ok st) (:empty st)))
+        st
+        (assoc st :input (:input s))))))
+
 (defn not-followed-by
   "Succeeds only if p fails; consumes no input."
   [p]
@@ -756,6 +765,11 @@ Addison-Wesley, 1975"
 (def split
   "Splits a string on whitespace."
   (split-on " \t\f\r\n"))
+
+
+(def mark
+  "Succeeds with a punctuation mark."
+  (one-of* "~!@#$%^&*()_-=+[]{}\\|;:<>,./?"))
 
 
 ;; +-------------------------------------------------------------+
