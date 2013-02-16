@@ -925,7 +925,7 @@ Addison-Wesley, 1975"
    which default to utf-8 and nil. Returns a PState record."
   ([p f] (parse-file p f "UTF-8" nil))
   ([p f en] (parse-file p f en nil))
-  ([p f en us] (parse p (f->s f) f us)))
+  ([p f en us] (parse p (f->s f en) f us)))
 
 
 (defn runf
@@ -933,7 +933,7 @@ Addison-Wesley, 1975"
    Prints the results."
   ([p f] (runf p f "UTF-8" nil))
   ([p f en] (runf p f en nil))
-  ([p f en us] (run p (f->s f) f us)))
+  ([p f en us] (run p (f->s f en) f us)))
 
 
 (defn runf*
