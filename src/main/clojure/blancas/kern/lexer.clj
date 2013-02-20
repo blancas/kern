@@ -601,8 +601,7 @@
 	      t (:type rec)]
 	  (cond (= t :basic)   (check (lexeme (<+> start (many other))))
 		(= t :C)       (check (lexeme (<+> start (many other))))
-		(= t :Haskell) (check (lexeme (<+> (<|> (<*> (sym* \_) (many1 other))
-					           (<*> alpha-num (many other))))))
+		(= t :Haskell) (check (lexeme (<+> start (many other))))
 		(= t :Java)    (check (lexeme (<+> start (many other))))
 		(= t :Shell)   (check (lexeme (<+> start (many other))))))
 
