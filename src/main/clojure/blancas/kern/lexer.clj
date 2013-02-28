@@ -596,14 +596,14 @@
 	      elem? (fn [s coll] (member? (lower-case s) (map #(lower-case %) coll)))
 	      is-in (if (:case-sensitive rec) member? elem?)
 	      check (fn [p] (>>= p (fn [s] (if (is-in s names)
-				             (fail (fmt :reserved s))
-				             (return s)))))
-	      t (:type rec)]
-	  (cond (= t :basic)   (check (lexeme (<+> start (many other))))
-		(= t :C)       (check (lexeme (<+> start (many other))))
-		(= t :Haskell) (check (lexeme (<+> start (many other))))
-		(= t :Java)    (check (lexeme (<+> start (many other))))
-		(= t :Shell)   (check (lexeme (<+> start (many other))))))
+					     (fail (fmt :reserved s))
+					     (return s)))))
+	      t     (:type rec)]
+	  (cond (= t :basic)   (<:> (check (lexeme (<+> start (many other)))))
+		(= t :C)       (<:> (check (lexeme (<+> start (many other)))))
+		(= t :Haskell) (<:> (check (lexeme (<+> start (many other)))))
+		(= t :Java)    (<:> (check (lexeme (<+> start (many other)))))
+		(= t :Shell)   (<:> (check (lexeme (<+> start (many other)))))))
 
 	field
         (fn [cs] (lexeme (field* cs)))

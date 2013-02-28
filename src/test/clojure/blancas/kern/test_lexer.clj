@@ -1860,10 +1860,10 @@
 	    s1 (parse lex/identifier in)
     	    em (get-msg-str (:error s1))]
         (fact "word - fails on a reserved word"
-	      (:input s1)  =>  [\* \space \b \a \r]
+	      (:input s1)  =>  [\f \o \o \space \* \space \b \a \r]
 	      (:value s1)  =>  nil
 	      (:ok    s1)  =>  false
-	      (:empty s1)  =>  false
+	      (:empty s1)  =>  true
 	               em  => "foo is a reserved name")))))
 
 
@@ -1876,8 +1876,8 @@
 	    s1 (parse lex/identifier in)
     	    em (get-msg-str (:error s1))]
         (fact "word - fails on a reserved word"
-	      (:input s1)  =>  [\* \space \b \a \r]
+	      (:input s1)  =>  [\F \O \O \space \* \space \b \a \r]
 	      (:value s1)  =>  nil
 	      (:ok    s1)  =>  false
-	      (:empty s1)  =>  false
+	      (:empty s1)  =>  true
 	               em  => "FOO is a reserved name")))))
