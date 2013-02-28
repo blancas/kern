@@ -541,7 +541,8 @@ Addison-Wesley, 1975"
 
 (defn between
   "Applies open, p, close; returns the value of p."
-  [open close p] (<< (>> open p) close))
+  ([delim p] (between delim delim p))
+  ([open close p] (<< (>> open p) close)))
 
 
 (defn times

@@ -2737,6 +2737,26 @@
 	  (:error s1)  =>  nil)))
 
 
+(deftest test-0980-05
+  (let [s1 (parse (between (sym* \:) digit) ":0:*")]
+    (fact "between - with same delimiter - one item"
+	  (:input s1)  =>  [\*]
+	  (:value s1)  =>  \0
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false
+	  (:error s1)  =>  nil)))
+
+
+(deftest test-0980-10
+  (let [s1 (parse (between (sym* \|) (many digit)) "|5005|*")]
+    (fact "between - with same delimiter - multiple items"
+	  (:input s1)  =>  [\*]
+	  (:value s1)  =>  [\5 \0 \0 \5]
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false
+	  (:error s1)  =>  nil)))
+
+
 (deftest test-0985
   (let [p1 (>>= letter
 		(fn [x] (>>= (many alpha-num)
