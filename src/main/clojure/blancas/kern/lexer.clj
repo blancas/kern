@@ -519,7 +519,7 @@
 (def- int-suffix (<|> (<< (sym* \N) (not-followed-by letter))
 		      (not-followed-by (<|> letter (sym* \.)))))
 
-(def- float-suffix (<< (optional (sym* \M)) (not-followed-by letter)))
+(def- float-suffix (<< (optional (sym* \M)) (not-followed-by letter) clear-empty))
 
 
 ;; +-------------------------------------------------------------+
@@ -599,11 +599,11 @@
 					     (fail (fmt :reserved s))
 					     (return s)))))
 	      t     (:type rec)]
-	  (cond (= t :basic)   (<:> (check (lexeme (<+> start (many other)))))
-		(= t :C)       (<:> (check (lexeme (<+> start (many other)))))
-		(= t :Haskell) (<:> (check (lexeme (<+> start (many other)))))
-		(= t :Java)    (<:> (check (lexeme (<+> start (many other)))))
-		(= t :Shell)   (<:> (check (lexeme (<+> start (many other)))))))
+	  (cond (= t :basic)   (<:> (check (lexeme (<+> start (many0 other)))))
+		(= t :C)       (<:> (check (lexeme (<+> start (many0 other)))))
+		(= t :Haskell) (<:> (check (lexeme (<+> start (many0 other)))))
+		(= t :Java)    (<:> (check (lexeme (<+> start (many0 other)))))
+		(= t :Shell)   (<:> (check (lexeme (<+> start (many0 other)))))))
 
 	field
         (fn [cs] (lexeme (field* cs)))

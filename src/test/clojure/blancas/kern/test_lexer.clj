@@ -1881,3 +1881,148 @@
 	      (:ok    s1)  =>  false
 	      (:empty s1)  =>  true
 	               em  => "FOO is a reserved name")))))
+
+
+;; +-------------------------------------------------------------+
+;; |                    Repeating Patterns.                      |
+;; +-------------------------------------------------------------+
+
+
+(deftest test-0900
+  (let [s1 (parse identifier "f")]
+    (fact "identifier -- state must not be empty"
+	  (:value s1)  =>  "f"
+	  (:ok    s1)  =>  true
+	  (:error s1)  =>  nil
+	  (:input s1)  =>  empty?
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-0905
+  (let [s1 (parse (many identifier) "f")]
+    (fact "identifier -- many should work with a single-letter id"
+	  (:value s1)  =>  ["f"]
+	  (:ok    s1)  =>  true
+	  (:error s1)  =>  nil
+	  (:input s1)  =>  empty?
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-0910
+  (let [s1 (parse (comma-sep identifier) "f")]
+    (fact "multiple identifier"
+	  (:value s1)  =>  ["f"]
+	  (:ok    s1)  =>  true
+	  (:error s1)  =>  nil
+	  (:input s1)  =>  empty?
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-0915
+  (let [s1 (parse (many (sym \Q)) "QQQ")]
+    (fact "multiple symbols"
+	  (:value s1)  =>  [\Q \Q \Q]
+	  (:ok    s1)  =>  true
+	  (:error s1)  =>  nil
+	  (:input s1)  =>  empty?
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-0920
+  (let [s1 (parse (many (one-of "abc")) "a b c")]
+    (fact "many one-of"
+	  (:value s1)  =>  [\a \b \c]
+	  (:ok    s1)  =>  true
+	  (:error s1)  =>  nil
+	  (:input s1)  =>  empty?
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-0925
+  (let [s1 (parse (many (none-of "abc")) "xyz")]
+    (fact "many none-of"
+	  (:value s1)  =>  [\x \y \z]
+	  (:ok    s1)  =>  true
+	  (:error s1)  =>  nil
+	  (:input s1)  =>  empty?
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-0930
+  (let [s1 (parse (many (token "abc")) "abcabc abc")]
+    (fact "many token"
+	  (:value s1)  =>  ["abc" "abc" "abc"]
+	  (:ok    s1)  =>  true
+	  (:error s1)  =>  nil
+	  (:input s1)  =>  empty?
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-0935
+  (let [s1 (parse (many0 (token "abc")) "xxx")]
+    (fact "many0, nothing match but empty is cleared"
+	  (:value s1)  =>  []
+	  (:ok    s1)  =>  true
+	  (:error s1)  =>  nil
+	  (:input s1)  =>  (seq "xxx")
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-0940
+  (let [s1 (parse (many (field " ")) "now is the time")]
+    (fact "many field"
+	  (:value s1)  =>  ["now" "is" "the" "time"]
+	  (:ok    s1)  =>  true
+	  (:error s1)  =>  nil
+	  (:input s1)  =>  empty?
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-0945
+  (let [s1 (parse (many (field " ")) "x y")]
+    (fact "many token"
+	  (:value s1)  =>  ["x" "y"]
+	  (:ok    s1)  =>  true
+	  (:error s1)  =>  nil
+	  (:input s1)  =>  empty?
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-0950
+  (let [s1 (parse (many dec-lit) "0")]
+    (fact "many dec-lit"
+	  (:value s1)  =>  [0]
+	  (:ok    s1)  =>  true
+	  (:error s1)  =>  nil
+	  (:input s1)  =>  empty?
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-0955
+  (let [s1 (parse (many oct-lit) "01")]
+    (fact "many oct-lit"
+	  (:value s1)  =>  [1]
+	  (:ok    s1)  =>  true
+	  (:error s1)  =>  nil
+	  (:input s1)  =>  empty?
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-0960
+  (let [s1 (parse (many hex-lit) "0x1")]
+    (fact "many hex-lit"
+	  (:value s1)  =>  [1]
+	  (:ok    s1)  =>  true
+	  (:error s1)  =>  nil
+	  (:input s1)  =>  empty?
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-0965
+  (let [s1 (parse (many float-lit) "1")]
+    (fact "many float-lit"
+	  (:value s1)  =>  [1.0]
+	  (:ok    s1)  =>  true
+	  (:error s1)  =>  nil
+	  (:input s1)  =>  empty?
+	  (:empty s1)  =>  false)))

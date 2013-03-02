@@ -281,6 +281,13 @@ Addison-Wesley, 1975"
   [msg s] (assoc s :error (make-err-expect (:pos s) msg)))
 
 
+(defn clear-empty
+  "Sets the parser state as not empty. Needed in compound parsers
+   where optional parsers at the end may leave an incorrect :empty
+   state for the parser as a whole."
+  [s] (assoc s :empty false))
+
+
 ;; +-------------------------------------------------------------+
 ;; |                       Basic parsers.                        |
 ;; +-------------------------------------------------------------+
@@ -449,6 +456,12 @@ Addison-Wesley, 1975"
         (if (:empty st)
           (assoc st :value vs :ok true :empty e :error nil)
           st)))))
+
+
+(defn many0
+  "Like (many) but it won't set the state to :empty. Use instead of
+   (many) if it comes last to avoid overriding non-empty parsing."
+  [p] (>> (many p) clear-empty))
 
 
 (defn many1
