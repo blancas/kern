@@ -722,7 +722,7 @@
 	  (:input s1)  =>  empty?
 	  (:value s1)  =>  0.0
 	  (:ok    s1)  =>  true
-	  (:empty s1)  =>  true)))
+	  (:empty s1)  =>  false)))
 
 
 (deftest test-0325
@@ -732,7 +732,7 @@
 	  (:input s1)  =>  empty?
 	  (:value s1)  =>  0.0
 	  (:ok    s1)  =>  true
-	  (:empty s1)  =>  true)))
+	  (:empty s1)  =>  false)))
 
 
 (deftest test-0330
@@ -742,7 +742,7 @@
 	  (:input s1)  =>  empty?
 	  (:value s1)  =>  100.00
 	  (:ok    s1)  =>  true
-	  (:empty s1)  =>  true)))
+	  (:empty s1)  =>  false)))
 
 
 (deftest test-0335
@@ -752,7 +752,7 @@
 	  (:input s1)  =>  empty?
 	  (:value s1)  =>  1558.95
 	  (:ok    s1)  =>  true
-	  (:empty s1)  =>  true)))
+	  (:empty s1)  =>  false)))
 
 
 (deftest test-0340
@@ -762,7 +762,7 @@
 	  (:input s1)  =>  empty?
 	  (:value s1)  =>  1558.955e12
 	  (:ok    s1)  =>  true
-	  (:empty s1)  =>  true)))
+	  (:empty s1)  =>  false)))
 
 
 (deftest test-0345
@@ -772,7 +772,7 @@
 	  (:input s1)  =>  empty?
 	  (:value s1)  =>  1558.9558e-12
 	  (:ok    s1)  =>  true
-	  (:empty s1)  =>  true)))
+	  (:empty s1)  =>  false)))
 
 
 (deftest test-0350
@@ -782,7 +782,7 @@
 	  (:input s1)  =>  empty?
 	  (:value s1)  =>  1558.9558e+12
 	  (:ok    s1)  =>  true
-	  (:empty s1)  =>  true)))
+	  (:empty s1)  =>  false)))
 
 
 (deftest test-0355
@@ -792,7 +792,7 @@
 	  (:input s1)  =>  empty?
 	  (:value s1)  =>  -1558.9558e-12
 	  (:ok    s1)  =>  true
-	  (:empty s1)  =>  true)))
+	  (:empty s1)  =>  false)))
 
 
 (deftest test-0360
@@ -802,7 +802,7 @@
 	  (:input s1)  =>  empty?
 	  (:value s1)  =>  1558e12
 	  (:ok    s1)  =>  true
-	  (:empty s1)  =>  true)))
+	  (:empty s1)  =>  false)))
 
 
 (deftest test-0365
@@ -822,7 +822,7 @@
 	  (:input s1)  =>  empty?
 	  (:value s1)  =>  -199.95
 	  (:ok    s1)  =>  true
-	  (:empty s1)  =>  true)))
+	  (:empty s1)  =>  false)))
 
 
 (deftest test-0370-05
@@ -832,7 +832,7 @@
 	  (:input s1)  =>  empty?
 	  (:value s1)  =>  999.0
 	  (:ok    s1)  =>  true
-	  (:empty s1)  =>  true)))
+	  (:empty s1)  =>  false)))
 
 
 (deftest test-0370-10

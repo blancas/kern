@@ -519,7 +519,7 @@
 (def- int-suffix (<|> (<< (sym* \N) (not-followed-by letter))
 		      (not-followed-by (<|> letter (sym* \.)))))
 
-(def- float-suffix (<< (optional (sym* \M)) (not-followed-by letter) clear-empty))
+(def- float-suffix (<< (optional (sym* \M)) (not-followed-by letter)))
 
 
 ;; +-------------------------------------------------------------+
@@ -645,7 +645,7 @@
 	                      (option ".0" (<*> (sym* \.) (many1 digit)))
 	                      (optional (<*> (one-of* "eE") sign (many1 digit)))
 			      float-suffix)))
-                  (fn [x] (return (read-string x))))
+                  (fn [x] (>> (return (read-string x)) clear-empty)))
              (i18n :float-lit))
 
 	bool-lit
