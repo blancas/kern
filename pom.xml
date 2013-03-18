@@ -5,7 +5,7 @@
   <groupId>org.blancas</groupId>
   <artifactId>kern</artifactId>
   <packaging>jar</packaging>
-  <version>0.6.0</version>
+  <version>0.6.1</version>
   <name>Kern</name>
   <description>A Parser Combinators Library</description>
 
@@ -59,7 +59,7 @@
     <dependency>
       <groupId>midje</groupId>
       <artifactId>midje</artifactId>
-      <version>1.4.0</version>
+      <version>1.5.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
