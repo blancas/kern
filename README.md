@@ -18,8 +18,6 @@ Hutton, Erik Meijer, and William Burge.
 
 ## Setup
 
-Browse the [change log](https://github.com/blancas/kern/wiki/Change-Log).
-
 Leiningen:
 
 ```clojure
@@ -73,6 +71,8 @@ Evaluate the `json` parser:
 ```
 
 ## Documentation
+
+Browse the [change log](https://github.com/blancas/kern/wiki/Change-Log).
 
 Kern is documented in the [Wiki](https://github.com/blancas/kern/wiki).
 
