@@ -18,6 +18,8 @@ Hutton, Erik Meijer, and William Burge.
 
 ## Setup
 
+Browse the [change log](https://github.com/blancas/kern/wiki/Change-Log).
+
 Leiningen:
 
 ```clojure
