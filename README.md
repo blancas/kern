@@ -21,7 +21,7 @@ Hutton, Erik Meijer, and William Burge.
 Leiningen:
 
 ```clojure
-[org.blancas/kern "0.5.0"]
+[org.blancas/kern "0.6.0"]
 ```
 
 Maven:
@@ -30,7 +30,7 @@ Maven:
 <dependency>
   <groupId>org.blancas</groupId>
   <artifactId>kern</artifactId>
-  <version>0.5.0</version>
+  <version>0.6.0</version>
 </dependency>
 ```
 
@@ -74,7 +74,7 @@ Evaluate the `json` parser:
 
 Kern is documented in the [Wiki](https://github.com/blancas/kern/wiki).
 
-Browse the Codox [Kern v0.5.0 API](http://blancas.github.com/kern).
+Browse the Codox [Kern v0.6.0 API](http://blancas.github.com/kern).
 
 To generate the API docs (in the `codox` directory):
 
