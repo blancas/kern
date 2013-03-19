@@ -21,7 +21,7 @@ Hutton, Erik Meijer, and William Burge.
 Leiningen:
 
 ```clojure
-[org.blancas/kern "0.6.0"]
+[org.blancas/kern "0.6.1"]
 ```
 
 Maven:
@@ -30,7 +30,7 @@ Maven:
 <dependency>
   <groupId>org.blancas</groupId>
   <artifactId>kern</artifactId>
-  <version>0.6.0</version>
+  <version>0.6.1</version>
 </dependency>
 ```
 
