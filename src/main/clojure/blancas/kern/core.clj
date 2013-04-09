@@ -620,64 +620,77 @@ Addison-Wesley, 1975"
 
 (def letter
   "Parses a letter."
-  (<?> (satisfy #(Character/isLetter %)) (di18n :letter)))
+  (<?> (satisfy (fn [^Character c] (Character/isLetter c)))
+       (di18n :letter)))
 
 
 (def lower
   "Parses a lower-case letter."
-  (<?> (satisfy #(Character/isLowerCase %)) (di18n :lower)))
+  (<?> (satisfy (fn [^Character c] (Character/isLowerCase c)))
+       (di18n :lower)))
 
 
 (def upper
   "Parses an upper-case letter."
-  (<?> (satisfy #(Character/isUpperCase %)) (di18n :upper)))
+  (<?> (satisfy (fn [^Character c] (Character/isUpperCase c)))
+       (di18n :upper)))
 
 
 (def white-space
   "Parses a whitespace character."
-  (<?> (satisfy #(Character/isWhitespace %)) (di18n :whitespace)))
+  (<?> (satisfy (fn [^Character c] (Character/isWhitespace c)))
+       (di18n :whitespace)))
 
 
 (def space
   "Parses the space character."
-  (<?> (satisfy #(= \space %)) (di18n :space)))
+  (<?> (satisfy (fn [^Character c] (.equals c \space)))
+       (di18n :space)))
 
 
 (def tab
   "Parses the tab character."
-  (<?> (satisfy #(= \tab %)) (di18n :tab)))
+  (<?> (satisfy (fn [^Character c] (.equals c \tab)))
+       (di18n :tab)))
 
 
 (def digit
   "Parses a digit."
-  (<?> (satisfy #(Character/isDigit %)) (di18n :digit)))
+  (<?> (satisfy (fn [^Character c] (Character/isDigit c)))
+       (di18n :digit)))
 
 
 (def hex-digit
   "Parses a hexadecimal digit."
   (let [hex (set "0123456789abcdefABCDEF")]
-    (<?> (satisfy #(hex %)) (di18n :hex-digit))))
+    (<?> (satisfy (fn [^Character c] (hex c)))
+	 (di18n :hex-digit))))
 
 
 (def oct-digit
   "Parses an octal digit."
   (let [oct (set "01234567")]
-    (<?> (satisfy #(oct %)) (di18n :oct-digit))))
+    (<?> (satisfy (fn [^Character c] (oct c)))
+	 (di18n :oct-digit))))
 
 
 (def alpha-num
   "Parses a letter or digit."
-  (<?> (satisfy #(Character/isLetterOrDigit %)) (di18n :alpha-num)))
+  (<?> (satisfy (fn [^Character c] (Character/isLetterOrDigit c)))
+       (di18n :alpha-num)))
 
 
 (defn sym*
   "Parses a single symbol x."
-  [x] (<?> (satisfy #(= x %)) (with-out-str (pr x))))
+  [x] (<?> (satisfy (fn [^Character c] (.equals x c)))
+	   (with-out-str (pr x))))
 
 
 (defn sym-
   "Parses a single symbol x; not case-sensitive."
-  [x] (<?> (>> (satisfy #(= (Character/toLowerCase x) (Character/toLowerCase %)))
+  [x] (<?> (>> (satisfy (fn [^Character c]
+			  (.equals (Character/toLowerCase x)
+				   (Character/toLowerCase c))))
 	       (return x))
 	   (with-out-str (pr x))))
 
@@ -739,12 +752,12 @@ Addison-Wesley, 1975"
 
 (defn one-of*
   "Succeeds if the next character is in the supplied string."
-  [cs] (satisfy #(>= (.indexOf cs (int %)) 0)))
+  [^String cs] (satisfy #(>= (.indexOf cs (int %)) 0)))
 
 
 (defn none-of*
   "Succeeds if the next character is not in the supplied string."
-  [cs] (satisfy #(neg? (.indexOf cs (int %)))))
+  [^String cs] (satisfy #(neg? (.indexOf cs (int %)))))
 
 
 (def new-line*

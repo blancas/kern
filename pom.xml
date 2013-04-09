@@ -5,7 +5,7 @@
   <groupId>org.blancas</groupId>
   <artifactId>kern</artifactId>
   <packaging>jar</packaging>
-  <version>0.6.1</version>
+  <version>0.7.0</version>
   <name>Kern</name>
   <description>A Parser Combinators Library</description>
 
@@ -65,7 +65,7 @@
     <dependency>
       <groupId>criterium</groupId>
       <artifactId>criterium</artifactId>
-      <version>0.2.1</version>
+      <version>0.3.1</version>
     </dependency>
     <dependency>
       <groupId>org.clojure</groupId>

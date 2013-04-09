@@ -383,6 +383,9 @@
 ;; +-------------------------------------------------------------+
 
 
+(def space-ascii 32)
+
+
 (def- esc-char
   "Parses an escape code for a basic char."
   (let [codes (zipmap "btnfr'\"\\/" "\b\t\n\f\r'\"\\/")]
@@ -393,7 +396,10 @@
 (defn- basic-char
   "Parses an unquoted character literal. Character c must be escaped."
   [c]
-  (<?> (<|> (satisfy #(and (not= % c) (not= % \\) (>= (int %) (int \space))))
+  (<?> (<|> (satisfy (fn [^Character x]
+		       (and (not (.equals x c))
+			    (not (.equals x \\))
+			    (>= (int x) space-ascii))))
 	    (>> (sym* \\) esc-char))
        (i18n :char-lit)))
 
@@ -417,7 +423,10 @@
 (defn- java-char
   "Parses an unquoted Java character literal. Character c must be escaped."
   [c]
-  (<?> (<|> (satisfy #(and (not= % c) (not= % \\) (>= (int %) (int \space))))
+  (<?> (<|> (satisfy (fn [^Character x]
+		       (and (not (.equals x c))
+			    (not (.equals x \\))
+			    (>= (int x) space-ascii))))
 	    (>> (sym* \\)
 		(<?> (<|> esc-char esc-oct esc-uni)
 		     (i18n :esc-code-j))))
@@ -446,7 +455,10 @@
 (defn- c-char
   "Parses an unquoted C character literal. Character c must be escaped."
   [c]
-  (<?> (<|> (satisfy #(and (not= % c) (not= % \\) (>= (int %) (int \space))))
+  (<?> (<|> (satisfy (fn [^Character x]
+		       (and (not (.equals x c))
+			    (not (.equals x \\))
+			    (>= (int x) space-ascii))))
 	    (>> (sym* \\)
 		(<?> (<|> c-esc-hex c-esc-char esc-oct esc-uni c-esc-uni)
 		     (i18n :esc-code-c))))
@@ -486,7 +498,10 @@
 (defn- haskell-char
   "Parses Haskell character literals."
   [c]
-  (<?> (<|> (satisfy #(and (not= % c) (not= % \\) (>= (int %) (int \space))))
+  (<?> (<|> (satisfy (fn [^Character x]
+		       (and (not (.equals x c))
+			    (not (.equals x \\))
+			    (>= (int x) space-ascii))))
 	    (>> (sym* \\)
 		(<?> (<|> h-esc-hex h-esc-oct c-esc-char h-esc-dec)
 		     (i18n :esc-code-h))))
