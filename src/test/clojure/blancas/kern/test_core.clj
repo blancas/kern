@@ -3117,6 +3117,33 @@
 	  (:empty s1)  =>  false)))
 
 
+(deftest test-1150-05
+  (let [s1 (parse (search dec-num) "Now I have 20 dollars")]
+    (fact "search - a simple number"
+	  (:input s1)  =>  (seq " dollars")
+	  (:value s1)  =>  20
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-1150-10
+  (let [s1 (parse (many (search dec-num)) "Now I have 20 dollars, or 2 tens")]
+    (fact "search - multiple numbers"
+	  (:input s1)  =>  empty?
+	  (:value s1)  =>  [20 2]
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-1150-15
+  (let [s1 (parse (many (search (<|> dec-num (token* "dollars")))) "Now I have 20 dollars")]
+    (fact "search - multiple choices, multiple times"
+	  (:input s1)  =>  empty?
+	  (:value s1)  =>  [20 "dollars"]
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false)))
+
+
 ;; +-------------------------------------------------------------+
 ;; |                        Parser state.                        |
 ;; +-------------------------------------------------------------+

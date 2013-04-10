@@ -608,6 +608,17 @@ Addison-Wesley, 1975"
    (<$> (comp (partial apply str) flatten) (apply <*> p q more))))
 
 
+(defn search
+  "Applies a parser p, traversing the input as necessary,
+   until it succeeds or it reaches the end of input."
+  [p]
+  (fn [s]
+    (let [s2 (p s)]
+      (if (or (:ok s2) (empty? (:input s2)))
+        s2
+        (recur (assoc s2 :input (rest (:input s2)) :error nil))))))
+
+
 ;; +-------------------------------------------------------------+
 ;; |                     Primitive parsers.                      |
 ;; +-------------------------------------------------------------+
