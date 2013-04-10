@@ -8,6 +8,7 @@
 (comment
 (load "customhoc")
 (ns customhoc)
+(hf "src/main/resources/custom-fact.hoc")
 )
 
 ;;  +--------------------------------------------------------+
@@ -113,9 +114,9 @@
 (defn eval-uniop  [exp] ((:op exp) (evalhoc (:right exp))))
 (defn eval-binop  [exp] ((:op exp) (evalhoc (:left exp)) (evalhoc (:right exp))))
 (defn eval-lit    [exp] (:value exp))
-(defn eval-rvalue [exp] (@sym-tbl (upper-case (:value exp))))
+(defn eval-rvalue [exp] (@sym-tbl (:value exp)))
 (defn eval-argmnt [exp] (@arg-tbl (:value exp)))
-(defn eval-lvalue [exp] (upper-case (:value (:left exp))))
+(defn eval-lvalue [exp] (:value (:left exp)))
 
 (defn eval-assign [exp]
   (let [val (evalhoc (:right exp))]

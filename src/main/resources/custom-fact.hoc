@@ -1,0 +1,14 @@
+(* Define the factorial function. *)
+
+Func factorial() {
+    IF ($1 == 0) {
+        Return 1
+    } else {
+        RETURN $1 * factorial($1 - 1)
+    }
+}
+
+
+(* Call the factorial *)
+
+FACTorial(6)

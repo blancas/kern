@@ -1,13 +1,13 @@
 (ns custom-lexer
-  (:use [blancas.kern.core])
+  (:use [blancas.kern.core]
+        [clojure.string :only (upper-case)])
   (:require [blancas.kern.lexer :as lex]))
 
 ;; To customize the lexer, change 'basic-def' fields as needed.
 (def hoc-style
   (assoc lex/basic-def
-    :comment-start       "{"
-    :comment-end         "}"
-    :comment-line        "%%"
+    :comment-start       "(*"
+    :comment-end         "*)"
     :nested-comments     true
     :identifier-letter   (<|> alpha-num (one-of* "_-."))
     :reserved-names      ["while" "if" "else" "read" "print" "return" "fun" "proc"]
@@ -26,7 +26,9 @@
 (def none-of    (:none-of    rec))
 (def token      (:token      rec))
 (def word       (:word       rec))
-(def identifier (:identifier rec))
+
+(def identifier (<$> upper-case (:identifier rec)))
+
 (def field      (:field      rec))
 (def char-lit   (:char-lit   rec))
 (def string-lit (:string-lit rec))
