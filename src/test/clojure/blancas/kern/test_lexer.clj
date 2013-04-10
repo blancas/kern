@@ -1804,7 +1804,7 @@
 ;; +-------------------------------------------------------------+
 
 
-(deftest test-0820
+(deftest test-0820-05
   (let [rec (lex/make-parsers (assoc lex/shell-style :line-continuation (sym* \?)))]
     (lex/with-parsers rec
       (let [in "foo bar foobar ?\n\t\tbaz"
@@ -1881,6 +1881,52 @@
 	      (:ok    s1)  =>  false
 	      (:empty s1)  =>  true
 	               em  => "FOO is a reserved name")))))
+
+
+(deftest test-0860
+  (let [rec (lex/make-parsers (assoc lex/basic-def :leading-sign false))]
+    (lex/with-parsers rec
+      (let [in "5005"
+	    s1 (parse lex/dec-lit in)]
+        (fact "dec-lit - regular case, no leading sign."
+	      (:input s1)  =>  empty?
+	      (:value s1)  =>  5005
+	      (:ok    s1)  =>  true
+	      (:empty s1)  =>  false)))))
+
+
+(deftest test-0865
+  (let [rec (lex/make-parsers (assoc lex/basic-def :leading-sign false))]
+    (lex/with-parsers rec
+      (let [in "0xCAFE"
+	    s1 (parse lex/hex-lit in)]
+        (fact "hex-lit - regular case, no leading sign."
+	      (:input s1)  =>  empty?
+	      (:value s1)  =>  0xCAFE
+	      (:ok    s1)  =>  true
+	      (:empty s1)  =>  false)))))
+
+
+(deftest test-0870
+  (let [rec (lex/make-parsers (assoc lex/basic-def :leading-sign false))]
+    (lex/with-parsers rec
+      (let [in "-5005"
+	    s1 (parse lex/dec-lit in)]
+        (fact "dec-lit - with leading sign it fails."
+	      (:input s1)  =>  (seq "-5005")
+	      (:value s1)  =>  nil
+	      (:ok    s1)  =>  false)))))
+
+
+(deftest test-0875
+  (let [rec (lex/make-parsers (assoc lex/basic-def :leading-sign false))]
+    (lex/with-parsers rec
+      (let [in "+3.1416"
+	    s1 (parse lex/float-lit in)]
+        (fact "float-lit - with leading sign it fails."
+	      (:input s1)  =>  (seq "+3.1416")
+	      (:value s1)  =>  nil
+	      (:ok    s1)  =>  false)))))
 
 
 ;; +-------------------------------------------------------------+

@@ -30,7 +30,8 @@
    reserved-names      ;; A list of names that cannot be identifiers.
    case-sensitive      ;; Whether tokens are case-sensitive; a boolean.
    line-continuation   ;; A parser for the token that precedes the new line.
-   trim-newline])      ;; Treats newline character(s) as whitespace.
+   trim-newline        ;; Treats newline character(s) as whitespace.
+   leading-sign])      ;; Whether numbers accept an optional leading sign.
 
 
 (def basic-def
@@ -46,7 +47,8 @@
      :reserved-names     []
      :case-sensitive     true
      :line-continuation  (sym* \\)
-     :trim-newline       true}))
+     :trim-newline       true
+     :leading-sign       true}))
 
 
 (def haskell-style
@@ -556,7 +558,8 @@
    :reserved-names      A list of names that cannot be identifiers.
    :case-sensitive      Whether tokens are case-sensitive; a boolean.
    :line-continuation   A parser for the token that precedes the new line.
-   :trim-newline])      Treats newline character(s) as whitespace."
+   :trim-newline        Treats newline character(s) as whitespace.
+   :leading-sign        Whether numbers accept an optional leading sign."
   [rec]
   (let [trim
 	(let [line?   (seq (:comment-line rec))
@@ -640,28 +643,32 @@
 		(= t :Shell)   (<+> (many1 (str-parser lexeme c-char)))))
 
 	dec-lit
-	(<?> (>>= (<:> (lexeme (<+> sign (many1 digit) int-suffix)))
-                  (fn [x] (return (read-string x))))
-             (i18n :dec-lit))
+	(let [lead (if (:leading-sign rec) sign (return nil))]
+	  (<?> (>>= (<:> (lexeme (<+> lead (many1 digit) int-suffix)))
+                    (fn [x] (return (read-string x))))
+               (i18n :dec-lit)))
 	
 	oct-lit
-	(<?> (>>= (<:> (lexeme (<+> sign (sym* \0) (many oct-digit) int-suffix)))
-                  (fn [x] (return (read-string x))))
-             (i18n :oct-lit))
+	(let [lead (if (:leading-sign rec) sign (return nil))]
+	  (<?> (>>= (<:> (lexeme (<+> lead (sym* \0) (many oct-digit) int-suffix)))
+                    (fn [x] (return (read-string x))))
+               (i18n :oct-lit)))
 
 	hex-lit
-	(<?> (>>= (<:> (lexeme (<+> sign (token- "0x") (many1 hex-digit) int-suffix)))
-                  (fn [x] (return (read-string x))))
-             (i18n :hex-lit))
+	(let [lead (if (:leading-sign rec) sign (return nil))]
+	  (<?> (>>= (<:> (lexeme (<+> lead (token- "0x") (many1 hex-digit) int-suffix)))
+                    (fn [x] (return (read-string x))))
+               (i18n :hex-lit)))
 
 	float-lit
-	(<?> (>>= (<:> (lexeme
-		         (<+> sign (many1 digit)
-	                      (option ".0" (<*> (sym* \.) (many1 digit)))
-	                      (optional (<*> (one-of* "eE") sign (many1 digit)))
-			      float-suffix)))
-                  (fn [x] (>> (return (read-string x)) clear-empty)))
-             (i18n :float-lit))
+	(let [lead (if (:leading-sign rec) sign (return nil))]
+	  (<?> (>>= (<:> (lexeme
+		           (<+> lead (many1 digit)
+	                        (option ".0" (<*> (sym* \.) (many1 digit)))
+	                        (optional (<*> (one-of* "eE") sign (many1 digit)))
+			        float-suffix)))
+                    (fn [x] (>> (return (read-string x)) clear-empty)))
+               (i18n :float-lit)))
 
 	bool-lit
         (<|> (>> (word "true") (return true))
