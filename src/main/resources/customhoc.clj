@@ -1,8 +1,8 @@
 ;; The HOC interpreter with a customized lexer.
 (ns customhoc
   (:use [blancas.kern core expr]
-        [clojure.string :only (upper-case)]
-	[custom-lexer]))
+        [clojure.string :only (upper-case)])
+  (:require [blancas.kern.lexer :as lex]))
 
 ;; To try:
 (comment
@@ -12,8 +12,36 @@
 )
 
 ;;  +--------------------------------------------------------+
-;;  |                         LEXER                          |
+;;  |               LEXER WITH CUSTOMIZATIONS                |
 ;;  +--------------------------------------------------------+
+
+;; To customize the lexer, change 'basic-def' fields as needed.
+(def hoc-style
+  (assoc lex/basic-def
+    :comment-start       "(*"
+    :comment-end         "*)"
+    :nested-comments     true
+    :identifier-letter   (<|> alpha-num (one-of* "_-."))
+    :reserved-names      ["while" "if" "else" "read" "print" "return" "fun" "proc"]
+    :case-sensitive      false
+    :trim-newline        false))
+
+;; Then make the customized parsers.
+(def- rec (lex/make-parsers hoc-style))
+
+;; For easy access, store the parsers in vars.
+(def trim       (:trim       rec))
+(def sym        (:sym        rec))
+(def new-line   (:new-line   rec))
+(def word       (:word       rec))
+(def string-lit (:string-lit rec))
+(def dec-lit    (:dec-lit    rec))
+(def float-lit  (:float-lit  rec))
+(def parens     (:parens     rec))
+(def braces     (:braces     rec))
+(def comma-sep  (:comma-sep  rec))
+
+(def identifier (<$> upper-case (:identifier rec)))
 
 (declare expr stmt evalhoc)
 
@@ -50,7 +78,6 @@
 (def factor (<|> (parens (fwd expr)) string-literal rvalue number argument))
 (def unary  (prefix1* :UNIOP  factor uni-op))
 (def power  (chainr1* :BINOP  unary  pow-op))
-
 (def term   (chainl1* :BINOP  power  mul-op))
 (def sum    (chainl1* :BINOP  term   add-op))
 (def relex  (chainl1* :BINOP  sum    rel-op))

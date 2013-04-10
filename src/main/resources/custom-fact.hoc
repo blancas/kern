@@ -8,6 +8,13 @@ Func factorial() {
     }
 }
 
+(* Oh, no, can't do that!
+
+   (* Call factorial on a negative *)
+
+   factorial(-100)
+ 
+*)
 
 (* Call the factorial *)
 
