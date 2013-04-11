@@ -26,7 +26,7 @@ Monadic Parser Combinators, 1996
 http://eprints.nottingham.ac.uk/237/1/monparsing.pdf
 
 William H. Burge
-Recursive programming techniques
+Recursive Programming Techniques
 Addison-Wesley, 1975"
       :author "Armando Blancas"}
   blancas.kern.core
