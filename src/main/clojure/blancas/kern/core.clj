@@ -611,9 +611,9 @@ Addison-Wesley, 1975"
   "Applies one or more parsers; flattens the result and
    converts it to a string."
   ([p]
-   (<$> (comp (partial apply str) flatten) p))
+   (<$> (comp join flatten) p))
   ([p q & more]
-   (<$> (comp (partial apply str) flatten) (apply <*> p q more))))
+   (<$> (comp join flatten) (apply <*> p q more))))
 
 
 (defn search
@@ -726,7 +726,7 @@ Addison-Wesley, 1975"
               (assoc st :value xs)
               (let [in (:input s)]
 	        (if (seq in)
-                  (unexpected (apply str (take (count xs) in)) s)
+                  (unexpected (join (take (count xs) in)) s)
 		  (assoc s :value nil :ok false :empty true :error (:error st)))))))
         (str xs)))
    ([xs & more]
@@ -744,7 +744,7 @@ Addison-Wesley, 1975"
               (assoc st :value xs)
               (let [in (:input s)]
 	        (if (seq in)
-                  (unexpected (apply str (take (count xs) in)) s)
+                  (unexpected (join (take (count xs) in)) s)
 		  (assoc s :value nil :ok false :empty true :error (:error st)))))))
         (str xs)))
   ([xs & more]
