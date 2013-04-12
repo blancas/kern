@@ -138,7 +138,7 @@ Addison-Wesley, 1975"
   ([src ln col] (->PPosition (or src "") ln col)))
 
 
-(defn- char-pos
+(defn- ^:dynamic char-pos
   "Computes the new position of the character c."
   [pos c]
   (cond (= c \newline) (assoc pos :col 1 :line (inc (:line pos)))
@@ -146,7 +146,7 @@ Addison-Wesley, 1975"
         :else          (assoc pos :col (inc (:col pos)))))
 
 
-(defn- str-pos
+(defn- ^:dynamic str-pos
   "Computes the stream position after the character sequence cs."
   [pos cs] (if (empty? cs) pos (recur (char-pos pos (first cs)) (rest cs))))
 
@@ -215,7 +215,7 @@ Addison-Wesley, 1975"
     (join eol (get-msg-list err))))
 
 
-(defn- merge-err
+(defn- ^:dynamic merge-err
   "Merges errors from two state records."
   [{e1 :error} {e2 :error}]
   (cond (and (nil? e1) (nil? e2)) nil
@@ -236,7 +236,7 @@ Addison-Wesley, 1975"
       (assoc st :empty (and (:empty s) (:empty st))))))
 
 
-(defn- set-ex
+(defn- ^:dynamic set-ex
   "Replace expect errors with expecting msg."
   [msg s]
   (letfn [(not-ex [{type :type}]
@@ -993,3 +993,44 @@ Addison-Wesley, 1975"
   ([p f] (runf* p f "UTF-8" nil))
   ([p f en] (runf* p f en nil))
   ([p f en us] (pprint (parse-file p f en us))))
+
+
+;; +-------------------------------------------------------------+
+;; | Performance tweak.                                          |
+;; | This code removes error-handling to just pass or fail. It's |
+;; | intended for big data files assumed to have correct syntax. |
+;; +-------------------------------------------------------------+
+
+
+(defn- char-pos-x  [x _] x)
+(defn- str-pos-x   [x _] x)
+(defn- merge-err-x [_ _] nil)
+(defn- set-ex-x    [_ x] x)
+
+
+(defn parse-data
+  "Works like (parse) but with error diagnostics disabled for
+   better performance. It's intended for data that can be
+   assumed to be correct or its diagnosis postponed."
+  ([p cs] (parse-data p cs nil nil))
+  ([p cs src] (parse-data p cs src nil))
+  ([p cs src us]
+    (binding [char-pos  char-pos-x
+              str-pos   str-pos-x
+              merge-err merge-err-x
+              set-ex    set-ex-x]
+      (parse p cs src us))))
+
+
+(defn parse-data-file
+  "Works like (parse-file) but with error diagnostics disabled for
+   better performance. It's intended for data files that can be
+   assumed to be correct or its diagnosis postponed."
+  ([p f] (parse-data-file p f "UTF-8" nil))
+  ([p f en] (parse-data-file p f en nil))
+  ([p f en us]
+    (binding [char-pos  char-pos-x
+              str-pos   str-pos-x
+              merge-err merge-err-x
+              set-ex    set-ex-x]
+      (parse-file p f en us))))
