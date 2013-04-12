@@ -700,18 +700,20 @@ Addison-Wesley, 1975"
 
 
 (defn sym*
-  "Parses a single symbol x."
-  [x] (<?> (satisfy (fn [^Character c] (.equals x c)))
-	   (with-out-str (pr x))))
+  "Parses a single symbol x (a character)."
+  [^Character x]
+  (<?> (satisfy (fn [^Character c] (.equals c x)))
+       (with-out-str (pr x))))
 
 
 (defn sym-
-  "Parses a single symbol x; not case-sensitive."
-  [x] (<?> (>> (satisfy (fn [^Character c]
+  "Parses a single symbol x (a character); not case-sensitive."
+  [^Character x]
+  (<?> (>> (satisfy (fn [^Character c]
 			  (.equals (Character/toLowerCase x)
 				   (Character/toLowerCase c))))
-	       (return x))
-	   (with-out-str (pr x))))
+	   (return x))
+       (with-out-str (pr x))))
 
 
 (defn token*
