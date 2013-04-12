@@ -710,8 +710,7 @@ Addison-Wesley, 1975"
   "Parses a single symbol x (a character); not case-sensitive."
   [^Character x]
   (<?> (>> (satisfy (fn [^Character c]
-			  (.equals (Character/toLowerCase x)
-				   (Character/toLowerCase c))))
+		      (= (Character/toLowerCase x) (Character/toLowerCase c))))
 	   (return x))
        (with-out-str (pr x))))
 
