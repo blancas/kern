@@ -10,7 +10,7 @@
 
 Kern is a library of parser combinators for Clojure. It is useful for
 implementing recursive-descent parsers based on predictive LL(1) grammars
-with on-demand, unlimited look-ahead.
+with on-demand, unlimited look-ahead LL(*).
 
 The main inspiration for Kern comes from Parsec, a Haskell library written
 by Daan Leijen, as well as work by Graham Hutton, Erik Meijer, and William Burge.
@@ -209,7 +209,7 @@ Addison-Wesley, 1975"
 
 
 (defn- get-msg-str
-  "Gets the text of error messages separated by \n."
+  "Gets the text of error messages separated by \\n."
   [err]
   (let [eol (System/getProperty "line.separator")]
     (join eol (get-msg-list err))))
@@ -583,6 +583,7 @@ Addison-Wesley, 1975"
         st
         (assoc st :input (:input s))))))
 
+
 (defn not-followed-by
   "Succeeds only if p fails; consumes no input."
   [p]
@@ -829,12 +830,14 @@ Addison-Wesley, 1975"
 	    (fn [x] (return (read-string (rmvz x)))))
        (di18n :dec-lit)))
 
+
 (def oct-num
   "Parses an octal integer delimited by any character that
    is not an octal digit."
   (<?> (>>= (<+> (many1 oct-digit))
 	    (fn [x] (return (read-string (str "0" x)))))
        (di18n :oct-lit)))
+
 
 (def hex-num
   "Parses a hex integer delimited by any character that
@@ -843,8 +846,9 @@ Addison-Wesley, 1975"
 	    (fn [x] (return (read-string (str "0x" x)))))
        (di18n :hex-lit)))
 
+
 (def float-num
-  "Parses a simple fractional number without an exponents.
+  "Parses a simple fractional number without an exponent.
    It is delimited by any character that is not a decimal
    digit. It cannot start with a period; the first period
    found must be followed by at least one digit."
