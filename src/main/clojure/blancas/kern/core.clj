@@ -503,7 +503,14 @@ Addison-Wesley, 1975"
 (defn skip-many
   "Parses p zero or more times and skips the results. This is
    like skip but it can apply p zero, one, or many times."
-  [p] (>> (many p) (return nil)))
+  [p]
+  (fn [s]
+    (loop [st (p s) e true]
+      (if (and (:ok st) (not (:empty st)))
+        (recur (p st) (and e (:empty st)))
+        (if (:empty st)
+          (assoc st :value nil :ok true :empty e :error nil)
+          st)))))
 
 
 (defn skip-many1
