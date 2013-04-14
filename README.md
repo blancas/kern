@@ -51,10 +51,8 @@ Parsing JSON data.
 (def pair (bind [f string-lit _ colon v (fwd json)]
             (return [f v])))
 
-(def array (brackets
-             (bind [elements (comma-sep (fwd json))]
-               (return (vec elements)))))
-  
+(def array (brackets (comma-sep (fwd json))))
+
 (def object (braces
               (bind [fields (comma-sep pair)]
                 (return (apply hash-map (reduce concat [] fields))))))

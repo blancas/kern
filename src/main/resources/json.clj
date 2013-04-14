@@ -20,10 +20,8 @@
 
 (def array
   "Parses the rule:  array := '[' (jvalue (',' jvalue)*)* ']'"
-  (brackets
-    (bind [elements (comma-sep (fwd jvalue))]
-      (return (vec elements)))))
-  
+  (brackets (comma-sep (fwd jvalue))))
+
 (def object
   "Parses the rule:  object := '{' (pair (',' pair)*)* '}'"
   (braces
