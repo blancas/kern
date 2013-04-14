@@ -34,6 +34,27 @@ Maven:
 </dependency>
 ```
 
+## Parser Combinators
+
+A parser is a high-order function whose job is to match an input string against 
+a specific pattern. A combinator is a parsing function whose 
+pattern is determined by parsers or by other combinators for the purposes 
+of providing repetition, choice, filtering, or to enforce a certain order in the input.
+We also use the term *parser* in its more general sense, as a logical module of 
+parsing functions for a particular task.
+
+The key feature of this technique is the ability to devise a composition and
+sequencing of combinators for parsing a grammar, and to do so in such a way
+that the resulting code resembles the structure of said grammar. Furthermore,
+the resulting parser may itsef be composed, like any other, custom or predefined,
+ to form more elaborate combinators.
+
+Thus parser combinators offer means of abstraction and composition
+that result in a powerful and pleasant way to code parsing modules. Kern provides
+a rich set of parsers for higher productivity and not having to start from scratch.
+The next section illustrates the above by defining a custom parser for JSON data. 
+
+
 ## Sample Usage
 
 Parsing JSON data.
@@ -42,6 +63,7 @@ Parsing JSON data.
     array   ::=  '[' (json (',' json)*)* ']'
     object  ::=  '{' (pair (',' pair)*)* '}'
     json    ::=  string | number | object | array | true | false | null
+
 ```clojure
 (use 'blancas.kern.core
      'blancas.kern.lexer.basic)
@@ -59,6 +81,7 @@ Parsing JSON data.
 
 (def json (<|> string-lit dec-lit float-lit object array bool-lit nil-lit))
 ```
+
 Evaluate the `json` parser:
 
 ```clojure
