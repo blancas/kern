@@ -15,7 +15,7 @@
 
 (def pair
   "Parses the rule:  pair := String ':' jvalue"
-  (bind [f string-lit _ colon v (fwd jvalue)]
+  (bind [f string-lit _ colon v jvalue]
     (return [f v])))
 
 (def array
