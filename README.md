@@ -118,7 +118,7 @@ Maven:
 ### Changes for release 0.7.0:
 
 * New parser: `parse-data`. Like `parse` but with diagnostics disabled for faster parsing.
-* New parser: `parse-data-file`. Like `parse-file` but with diagnostics disabled.
+* New parser: `parse-data-file`. Like `parse-file` but with diagnostics disabled for faster parsing.
 * Various performance improvements for `parse-file` and parsers that compare characters.
 * New parser: `(search p)`. Applies p traversing any input as necessary.
 * New lexer configuration: `leading-sign`. Default true: numbers accept a leading +/- sign.
