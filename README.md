@@ -16,23 +16,10 @@ Hutton, Erik Meijer, and William Burge.
 * Access to the parser's internal state from client code.
 * Sample parsers in `src/main/resources`.
 
-## Setup
+The library is intended for parsing all kinds of text. In addition, there
+is support for programming language development throughout the `lexer` and `expr`
+namespaces.
 
-Leiningen:
-
-```clojure
-[org.blancas/kern "0.6.1"]
-```
-
-Maven:
-
-```xml
-<dependency>
-  <groupId>org.blancas</groupId>
-  <artifactId>kern</artifactId>
-  <version>0.6.1</version>
-</dependency>
-```
 
 ## Parser Combinators
 
@@ -54,8 +41,7 @@ that result in a powerful and pleasant way to code parsing modules. Kern provide
 a rich set of parsers for higher productivity and not having to start from scratch.
 The next section illustrates the above by defining a custom parser for JSON data. 
 
-
-## Sample Usage
+### Sample Usage
 
 Parsing JSON data.
 
@@ -91,13 +77,45 @@ Evaluate the `json` parser:
 ;; {"scores" [400 125 999], "top" true, "id" 1122}
 ```
 
+## Performance
+
+Kern's design isn't well-suited for achieving very high performance. It is based
+on pure functions and the systematic composition of its core parsers. My main
+goals are high productivity and usability. I'll make, however, every effort
+to improve the efficiency of the library.
+
+Just to give a ballpark figure for performance at the REPL, on my MacBook Pro, 
+without any JVM warm up, Kern will parse 350K worth of JSON data per second 
+using the above definitions, with variations of some 10% either way. In contrast, 
+[data.json](https://github.com/clojure/data.json) will parse 4MB in a quarter
+of a second. (I realize times can vary a lot, but after a few runs they
+converge somewhat; YMMV.)
+
+## Setup
+
+Leiningen:
+
+```clojure
+[org.blancas/kern "0.7.0"]
+```
+
+Maven:
+
+```xml
+<dependency>
+  <groupId>org.blancas</groupId>
+  <artifactId>kern</artifactId>
+  <version>0.7.0</version>
+</dependency>
+```
+
 ## Documentation
 
 Browse the [change log](https://github.com/blancas/kern/wiki/Change-Log).
 
 Kern is documented in the [Wiki](https://github.com/blancas/kern/wiki).
 
-Browse the Codox [Kern v0.6.0 API](http://blancas.github.com/kern).
+Browse the Codox [Kern v0.7.0 API](http://blancas.github.com/kern).
 
 To generate the API docs (in the `codox` directory):
 
