@@ -93,6 +93,10 @@ using the above definitions, with variations of some 10% either way. In contrast
 of a second. (I realize times can vary a lot, but after a few runs they
 converge somewhat; YMMV.)
 
+I've written Kern as my preferred way of working on domain-specific languages,
+stand-alone and for program extensions. For these jobs I've found its performance
+quite satisfactory, with the big pay-off being the boost in productivity.
+
 ## Setup
 
 Leiningen:
