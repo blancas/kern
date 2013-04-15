@@ -43,7 +43,7 @@ that result in a powerful and pleasant way to code parsing modules. Kern provide
 a rich set of parsers for higher productivity and not having to start from scratch.
 The next section illustrates the above by defining a custom parser for JSON data. 
 
-### Sample Usage
+## Sample Usage
 
 Parsing JSON data.
 
