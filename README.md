@@ -16,9 +16,11 @@ Hutton, Erik Meijer, and William Burge.
 * Access to the parser's internal state from client code.
 * Sample parsers in `src/main/resources`.
 
-The library is intended for parsing all kinds of text. In addition, there
-is support for programming language development throughout the `lexer` and `expr`
-namespaces.
+The library is intended for parsing text of all kinds. In addition, there
+is support for parsing programming languages and data formats with language-like
+notations like JSON and EDN. The lexer combinators may be configured
+for various language features like handling of whitespace, block and line comments,
+case sensitivity, and patterns for identifiers, among others.
 
 
 ## Parser Combinators
