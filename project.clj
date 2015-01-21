@@ -20,5 +20,5 @@
                           [midje "1.6.3" :exclusions [org.clojure/clojure]]
                           [criterium "0.4.3"]
                           [jline "1.0"]]
-           :plugins [[codox "0.6.8"]]
+           :plugins [[codox "0.6.8"][lein-midje "3.1.3"]]
            :codox {:sources ["src/main/clojure"] :output-dir "codox"}}})
