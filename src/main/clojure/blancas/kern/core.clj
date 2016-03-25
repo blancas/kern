@@ -30,10 +30,11 @@ Recursive Programming Techniques
 Addison-Wesley, 1975"
       :author "Armando Blancas"}
   blancas.kern.core
-  (:use [blancas.kern.i18n]
-	[clojure.string :only (join)]
-        [clojure.java.io :only (reader)]
-        [clojure.pprint :only (pprint)]))
+  (:refer-clojure :exclude [cat])
+  (:require [blancas.kern.i18n :refer :all]
+            [clojure.string :refer [join]]
+            [clojure.java.io :refer [reader]]
+            [clojure.pprint :refer [pprint]]))
 
 
 (defmacro def-
