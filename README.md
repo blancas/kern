@@ -102,7 +102,7 @@ quite satisfactory, with the big pay-off being the boost in productivity.
 Leiningen:
 
 ```clojure
-[org.blancas/kern "0.7.0"]
+[org.blancas/kern "1.0.0"]
 ```
 
 Maven:
@@ -111,17 +111,14 @@ Maven:
 <dependency>
   <groupId>org.blancas</groupId>
   <artifactId>kern</artifactId>
-  <version>0.7.0</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 
-### Changes for release 0.7.0:
+### Changes for release 1.0.0:
 
-* New parser: `parse-data`. Like `parse` but with diagnostics disabled for faster parsing.
-* New parser: `parse-data-file`. Like `parse-file` but with diagnostics disabled for faster parsing.
-* Various performance improvements for `parse-file` and parsers that compare characters.
-* New parser: `(search p)`. Applies p traversing any input as necessary.
-* New lexer configuration: `leading-sign`. Default true: numbers accept a leading +/- sign.
+* Updated dependencies.
+* Fixed a name-collision warning.
 
 ## Documentation
 
@@ -129,7 +126,7 @@ Browse the whole [change log](https://github.com/blancas/kern/wiki/Change-Log).
 
 Kern is documented in the [Wiki](https://github.com/blancas/kern/wiki).
 
-Browse the Codox [Kern v0.7.0 API](http://blancas.github.com/kern).
+Browse the Codox [Kern v1.0.0 API](http://blancas.github.com/kern).
 
 To generate the API docs (in the `codox` directory):
 
