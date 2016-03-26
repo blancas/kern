@@ -128,10 +128,6 @@ Kern is documented in the [Wiki](https://github.com/blancas/kern/wiki).
 
 Browse the Codox [Kern v1.0.0 API](http://blancas.github.com/kern).
 
-To generate the API docs (in the `codox` directory):
-
-    lein doc
-
 ## YourKit
 
 YourKit is kindly supporting open source projects with its full-featured Java

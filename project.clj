@@ -24,4 +24,4 @@
                           [criterium "0.4.4"]
                           [jline "1.0"]]
            :plugins [[codox "0.9.4"][lein-midje "3.2"]]
-           :codox {:sources ["src/main/clojure"] :output-dir "codox"}}})
+           :codox {:source-paths ["src/main/clojure"] :output-path "codox"}}})
