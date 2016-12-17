@@ -426,12 +426,12 @@ Addison-Wesley, 1975"
 
 
 (defn <*>
-  "Parses p followed by q or more; collects the results in a
+  "Applies one or more parsers; collects the results in a
    vector, including nil values. If any parser fails, it
    stops immediately and fails."
-  [p q & more]
+  [p & more]
   (fn [s]
-    (loop [s1 (assoc s :value [] :empty true) ps (list* p q more)]
+    (loop [s1 (assoc s :value [] :empty true) ps (cons p more)]
       (let [s2 (cat (first ps) s1)]
         (if (and (:ok s2) (next ps))
           (recur s2 (next ps))
@@ -609,12 +609,10 @@ Addison-Wesley, 1975"
 
 
 (defn <+>
-  "Applies one or more parsers; flattens the result and
-   converts it to a string."
-  ([p]
-   (<$> (comp join flatten) p))
-  ([p q & more]
-   (<$> (comp join flatten) (apply <*> p q more))))
+  "Applies one or more parsers stopping at the first failure.
+   Flattens the result and converts it to a string."
+  [p & more]
+  (<$> (comp join flatten) (apply <*> p more)))
 
 
 (defn search

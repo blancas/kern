@@ -1558,6 +1558,24 @@
 	  (:empty s1)  =>  true)))
 
 
+(deftest test-0469-a
+  (let [s1 (parse (<*> digit) "9")]
+    (fact "<*> - collects from one parser"
+	  (:input s1)  =>  empty?
+	  (:value s1)  =>  [\9]
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-0469-b
+  (let [s1 (parse (<*> letter) "U2")]
+    (fact "<*> - collects from one parser"
+	  (:input s1)  =>  [\2]
+	  (:value s1)  =>  [\U]
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false)))
+
+
 (deftest test-0470
   (let [s1 (parse (<*> (sym* \-) digit) "-1")]
     (fact "<*> - collects from two parsers"
@@ -2802,6 +2820,16 @@
 	  (:error s1)  =>  nil)))
 
 
+(deftest test-1001
+  (let [s1 (parse (times 1 letter) "x")]
+    (fact "times - one item"
+	  (:input s1)  =>  []
+	  (:value s1)  =>  [\x]
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false
+	  (:error s1)  =>  nil)))
+
+
 (deftest test-1005
   (let [s1 (parse (times 3 (>> any-char letter)) "*a@b$c")]
     (fact "times - three items"
@@ -3039,6 +3067,24 @@
 	  (:ok    s1)  =>  false
 	  (:empty s1)  =>  false
 	           em  => "unexpected \\*\nexpecting \\X")))
+
+
+(deftest test-1113
+  (let [s1 (parse (<+> letter) "a")]
+    (fact "<+> - cats from one parser"
+	  (:input s1)  =>  empty?
+	  (:value s1)  =>  "a"
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-1114
+  (let [s1 (parse (<+> (times 3 (sym* \S))) "SSS")]
+    (fact "<+> - cats from one parser"
+	  (:input s1)  =>  empty?
+	  (:value s1)  =>  "SSS"
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false)))
 
 
 (deftest test-1115
