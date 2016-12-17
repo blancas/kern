@@ -102,7 +102,7 @@ quite satisfactory, with the big pay-off being the boost in productivity.
 Leiningen:
 
 ```clojure
-[org.blancas/kern "1.0.0"]
+[org.blancas/kern "1.1.0"]
 ```
 
 Maven:
@@ -111,14 +111,15 @@ Maven:
 <dependency>
   <groupId>org.blancas</groupId>
   <artifactId>kern</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
-### Changes for release 1.0.0:
+### Changes for release 1.1.0:
 
-* Updated dependencies.
-* Fixed a name-collision warning.
+* Fixed issue #13: times failed to parse once.
+* Fixed <+> when using a single parser.
+* Reduced the arity of <*> to 1 allowing for 1+ parsers to be applied, adding this missing flexibility.
 
 ## Documentation
 
@@ -126,7 +127,7 @@ Browse the whole [change log](https://github.com/blancas/kern/wiki/Change-Log).
 
 Kern is documented in the [Wiki](https://github.com/blancas/kern/wiki).
 
-Browse the Codox [Kern v1.0.0 API](http://blancas.github.com/kern).
+Browse the Codox [Kern v1.1.0 API](http://blancas.github.com/kern).
 
 ## YourKit
 
