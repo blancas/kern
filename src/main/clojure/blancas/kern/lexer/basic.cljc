@@ -6,28 +6,26 @@
 ;; the terms of this license.
 ;; You must not remove this notice, or any other, from this software.
 
-(ns ^{:doc "The Kern C-style Lexer library.
+(ns ^{:doc "The Kern Basic Lexer library.
 
 This namespace is a version of blancas.kern.lexer with the following settings:
 
-comment-start        /*
-comment-end          */
-comment-line         //
+comment-start        None
+comment-end          None
+comment-line         None
 nested-comments      No
 identifier-start     Letter or _
 identifier-letter    Alphanumeric or _ 
 reserved-names       None
 case-sensitive       Yes
 line-continuation    Backslash
-trim-newline         Yes
-
-Literal values follow the rules of the C programming language."
+trim-newline         Yes"
       :author "Armando Blancas"}
-  blancas.kern.lexer.c-style
-  (:use [blancas.kern.core])
-  (:require [blancas.kern.lexer :as lex]))
+  blancas.kern.lexer.basic
+  (:require [blancas.kern.core :as k]
+            [blancas.kern.lexer :as lex]))
 
-(def- rec (lex/make-parsers lex/c-style))
+(def rec (lex/make-parsers lex/basic-def))
 
 (def trim       (:trim       rec))
 (def lexeme     (:lexeme     rec))

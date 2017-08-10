@@ -6,26 +6,28 @@
 ;; the terms of this license.
 ;; You must not remove this notice, or any other, from this software.
 
-(ns ^{:doc "The Kern Basic Lexer library.
+(ns ^{:doc "The Kern Java-style Lexer library.
 
 This namespace is a version of blancas.kern.lexer with the following settings:
 
-comment-start        None
-comment-end          None
-comment-line         None
+comment-start        /*
+comment-end          */
+comment-line         //
 nested-comments      No
 identifier-start     Letter or _
 identifier-letter    Alphanumeric or _ 
 reserved-names       None
 case-sensitive       Yes
 line-continuation    Backslash
-trim-newline         Yes"
-      :author "Armando Blancas"}
-  blancas.kern.lexer.basic
-  (:use [blancas.kern.core])
-  (:require [blancas.kern.lexer :as lex]))
+trim-newline         Yes
 
-(def- rec (lex/make-parsers lex/basic-def))
+Literal values follow the rules of the Java programming language."
+      :author "Armando Blancas"}
+  blancas.kern.lexer.java-style
+  (:require [blancas.kern.core :as k]
+            [blancas.kern.lexer :as lex]))
+
+(k/def- rec (lex/make-parsers lex/java-style-def))
 
 (def trim       (:trim       rec))
 (def lexeme     (:lexeme     rec))

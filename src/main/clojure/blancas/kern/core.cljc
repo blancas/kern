@@ -6,7 +6,8 @@
 ;; the terms of this license.
 ;; You must not remove this notice, or any other, from this software.
 
-(ns ^{:doc "The core Kern library.
+(ns
+  ^{:doc    "The core Kern library.
 
 Kern is a library of parser combinators for Clojure. It is useful for
 implementing recursive-descent parsers based on predictive LL(1) grammars
@@ -28,12 +29,12 @@ http://eprints.nottingham.ac.uk/237/1/monparsing.pdf
 William H. Burge
 Recursive Programming Techniques
 Addison-Wesley, 1975"
-      :author "Armando Blancas"}
+    :author "Armando Blancas"}
   blancas.kern.core
   (:refer-clojure :exclude [cat])
-  (:require [blancas.kern.i18n :refer :all]
-            [clojure.string :refer [join]]
-            [clojure.java.io :refer [reader]]
+  (:require [blancas.kern.i18n :refer [fmt i18n di18n]]
+            [blancas.kern.char :as char]
+            [clojure.string :refer [join] :as str]
             [clojure.pprint :refer [pprint]]))
 
 
@@ -58,19 +59,21 @@ Addison-Wesley, 1975"
     `(fn [~x] (~p ~x))))
 
 
-(defn char-seq
-  "Returns characters from rdr as a lazy sequence.
-   rdr must implement java.io.Reader"
-  [^java.io.Reader rdr]
-  (let [c (.read rdr)]
-    (when-not (neg? c)
-      (cons (char c) (lazy-seq (char-seq rdr))))))
+#?(:clj
+   (defn char-seq
+     "Returns characters from rdr as a lazy sequence.
+      rdr must implement java.io.Reader"
+     [^java.io.Reader rdr]
+     (let [c (.read rdr)]
+       (when-not (neg? c)
+         (cons (char c) (lazy-seq (char-seq rdr)))))))
 
 
-(defn f->s
-  "Gets a character sequence from a file-like object."
-  ([f] (slurp f))
-  ([f e] (slurp f :encoding e)))
+#(:clj
+   (defn f->s
+     "Gets a character sequence from a file-like object."
+     ([f] (slurp f))
+     ([f e] (slurp f :encoding e))))
 
 
 (defn member?
@@ -95,10 +98,10 @@ Addison-Wesley, 1975"
 
 
 ;; Error types.
-(def- err-system   0) ;; Used in satisfy for specific unexpected input.
-(def- err-unexpect 1) ;; Used on any unexpected input to show a message.
-(def- err-expect   2) ;; Used to show a message of what's expected.
-(def- err-message  3) ;; Used for any kind of message from client code.
+(def err-system 0)                                          ;; Used in satisfy for specific unexpected input.
+(def err-unexpect 1)                                        ;; Used on any unexpected input to show a message.
+(def err-expect 2)                                          ;; Used to show a message of what's expected.
+(def err-message 3)                                         ;; Used for any kind of message from client code.
 
 ;; Keeps the position of the input:
 ;; src   - a string that identifies the source of input
@@ -106,11 +109,11 @@ Addison-Wesley, 1975"
 ;; col   - the column into the line.
 (defrecord PPosition [src line col]
   Comparable
-    (compareTo [this other]
-      (let [result (compare line (:line other))]
-        (if (zero? result)
-          (compare col (:col other))
-          result))))
+  (compareTo [this other]
+    (let [result (compare line (:line other))]
+      (if (zero? result)
+        (compare col (:col other))
+        result))))
 
 ;; A PMessage consists of:
 ;; type  - One of the error types listed above.
@@ -133,67 +136,67 @@ Addison-Wesley, 1975"
 (defrecord PState [input pos value ok empty user error])
 
 
-(defn- make-pos
+(defn make-pos
   "Makes a position record."
   ([src] (make-pos src 1 1))
   ([src ln col] (->PPosition (or src "") ln col)))
 
 
-(defn- ^:dynamic char-pos
+(defn ^:dynamic char-pos
   "Computes the new position of the character c."
   [pos c]
   (cond (= c \newline) (assoc pos :col 1 :line (inc (:line pos)))
-        (= c \tab)     (assoc pos :col (+ (:col pos) *tab-width*))
-        :else          (assoc pos :col (inc (:col pos)))))
+        (= c \tab) (assoc pos :col (+ (:col pos) *tab-width*))
+        :else (assoc pos :col (inc (:col pos)))))
 
 
-(defn- ^:dynamic str-pos
+(defn ^:dynamic str-pos
   "Computes the stream position after the character sequence cs."
   [pos cs] (if (empty? cs) pos (recur (char-pos pos (first cs)) (rest cs))))
 
 
-(defn- make-err-system
+(defn make-err-system
   "Makes a message of type err-system."
   [pos text] (->PError pos (list (->PMessage err-system text))))
 
 
-(defn- make-err-unexpect
+(defn make-err-unexpect
   "Makes a message of type err-unexpect."
   [pos text] (->PError pos (list (->PMessage err-unexpect text))))
 
 
-(defn- make-err-expect
+(defn make-err-expect
   "Makes a message of type err-expect."
   [pos text] (->PError pos (list (->PMessage err-expect text))))
 
 
-(defn- make-err-message
+(defn make-err-message
   "Makes a message of type err-message."
   [pos text] (->PError pos (list (->PMessage err-message text))))
 
 
-(defn- get-msg
+(defn get-msg
   "Get the text from message types system, unexpect, and message."
   [pmsg]
   (let [type (:type pmsg)
-	text (-> pmsg :text force)]
-    (cond (= type err-system)   (fmt :unexpected text)
-	  (= type err-unexpect) (fmt :unexpected text)
-          (= type err-message)  text)))
+        text (-> pmsg :text force)]
+    (cond (= type err-system) (fmt :unexpected text)
+          (= type err-unexpect) (fmt :unexpected text)
+          (= type err-message) text)))
 
 
-(defn- get-msg-expect
+(defn get-msg-expect
   "Get the text from a list of messages of type expect."
   [lst]
   (let [show (fn [xs]
-	       (let [comma-sep (join (i18n :comma) (butlast xs))
-	             or-last (fmt :or (last xs))]
-	         (str comma-sep or-last)))
-	opts (map (comp force :text) lst)
-	cnt (count opts)]
+               (let [comma-sep (join (i18n :comma) (butlast xs))
+                     or-last   (fmt :or (last xs))]
+                 (str comma-sep or-last)))
+        opts (map (comp force :text) lst)
+        cnt  (count opts)]
     (fmt :expecting (if (= cnt 1) (first opts) (show opts)))))
 
-  
+
 (defn- get-msg-list
   "Gets the text of error messages as a list."
   [{msgs :msgs}]
@@ -209,10 +212,10 @@ Addison-Wesley, 1975"
         (reduce #(conj %1 (get-msg %2)) [] lst)))))
 
 
-(defn- get-msg-str
+(defn get-msg-str
   "Gets the text of error messages separated by \\n."
   [err]
-  (let [eol (System/getProperty "line.separator")]
+  (let [eol #?(:clj (System/getProperty "line.separator") :cljs "\n")]
     (join eol (get-msg-list err))))
 
 
@@ -220,12 +223,13 @@ Addison-Wesley, 1975"
   "Merges errors from two state records."
   [{e1 :error} {e2 :error}]
   (cond (and (nil? e1) (nil? e2)) nil
-	(nil? e1) e2
-	(nil? e2) e1
-	:else (let [r (compare (:pos e1) (:pos e2))]
-	        (cond (zero? r) (update-in e1 [:msgs] concat (:msgs e2))
-		      (pos? r) e1
-		      :else e2))))
+        (nil? e1) e2
+        (nil? e2) e1
+        :else (let [pos1 (:pos e1) pos2 (:pos e2)
+                    r (compare [(:line pos1) (:col pos1)] [(:line pos2) (:col pos2)])]
+                (cond (zero? r) (update-in e1 [:msgs] concat (:msgs e2))
+                      (pos? r) e1
+                      :else e2))))
 
 
 (defn- cat
@@ -241,12 +245,12 @@ Addison-Wesley, 1975"
   "Replace expect errors with expecting msg."
   [msg s]
   (letfn [(not-ex [{type :type}]
-	    (not (= type err-expect)))
-	  (update [lst err]
-	    (cons err (filter not-ex lst)))]
+            (not (= type err-expect)))
+          (update [lst err]
+            (cons err (filter not-ex lst)))]
     (let [m (->PMessage err-expect msg)]
       (update-in s [:error :msgs] update m))))
-  
+
 
 ;; +-------------------------------------------------------------+
 ;; |              Public supporting functions.                   |
@@ -318,10 +322,10 @@ Addison-Wesley, 1975"
     (let [stm (:input s)]
       (if (empty? stm)
         (unexpected (i18n :eof) s)
-	(let [c (first stm)]
-	  (if (pred c)
-	    (->PState (rest stm) (char-pos (:pos s) c) c true false (:user s) nil)
-	    (unexpected-input (with-out-str (pr c)) s)))))))
+        (let [c (first stm)]
+          (if (pred c)
+            (->PState (rest stm) (char-pos (:pos s) c) c true false (:user s) nil)
+            (unexpected-input (with-out-str (pr c)) s)))))))
 
 
 ;; +-------------------------------------------------------------+
@@ -359,9 +363,9 @@ Addison-Wesley, 1975"
      (let [s2 (p s)]
        (if (failed-empty? s2)
          (let [s3 (q s)]
-	   (if (:ok s3)
-	     s3
-	     (assoc s3 :error (merge-err s2 s3))))
+           (if (:ok s3)
+             s3
+             (assoc s3 :error (merge-err s2 s3))))
          s2))))
   ([p q & more]
    (reduce <|> (list* p q more))))
@@ -376,12 +380,12 @@ Addison-Wesley, 1975"
   (fn [s]
     (let [s1 (p s)]
       (if (:ok s1)
-	(let [s2 ((f (:value s1)) s1)
-	      s3 (assoc s2 :empty (and (:empty s1) (:empty s2)))]
-	  (if (:ok s3)
-	    s3
-	    (assoc s3 :error (merge-err s1 s3))))
-	s1))))
+        (let [s2 ((f (:value s1)) s1)
+              s3 (assoc s2 :empty (and (:empty s1) (:empty s2)))]
+          (if (:ok s3)
+            s3
+            (assoc s3 :error (merge-err s1 s3))))
+        s1))))
 
 
 (defmacro bind
@@ -486,8 +490,8 @@ Addison-Wesley, 1975"
   (fn [s]
     (let [st (p s)]
       (if (failed-empty? st)
-	(reply x s)
-	st))))
+        (reply x s)
+        st))))
 
 
 (defn skip
@@ -536,7 +540,7 @@ Addison-Wesley, 1975"
    of sep; returns the results of p in a vector."
   [sep p] (many (<< p sep)))
 
-  
+
 (defn end-by1
   "Parses p one or more times, separated and ended by applications
    of sep; returns the results of p in a vector."
@@ -549,7 +553,7 @@ Addison-Wesley, 1975"
   "Parses p one or more times separated, and optionally ended by sep;
    collects the results in a vector."
   [sep p]
-  (>>= p (fn [x] 
+  (>>= p (fn [x]
            (<|> (>>= (>> sep (sep-end-by sep p)) (fn [y] (return (reduce conj [x] y))))
                 (return [x])))))
 
@@ -573,14 +577,14 @@ Addison-Wesley, 1975"
     (apply <*> (repeat n p))
     (return [])))
 
-    
+
 (defn look-ahead
   "Applies p and returns the result; it consumes no input."
   [p]
   (fn [s]
     (let [st (p s)]
       (assoc s :value (:value st)))))
-  
+
 
 (defn predict
   "Applies p; if it succeeds it consumes no input."
@@ -604,7 +608,7 @@ Addison-Wesley, 1975"
    Returns the results in a vector."
   [p end]
   (letfn [(scan [] (<|> (>> end (return []))
-                   (>>= p (fn [x] (>>= (scan) (fn [y] (return (reduce conj [x] y))))))))]
+                        (>>= p (fn [x] (>>= (scan) (fn [y] (return (reduce conj [x] y))))))))]
     (scan)))
 
 
@@ -638,80 +642,92 @@ Addison-Wesley, 1975"
 
 (def letter
   "Parses a letter."
-  (<?> (satisfy (fn [^Character c] (Character/isLetter c)))
+  (<?> (satisfy char/is-letter)
        (di18n :letter)))
 
 
 (def lower
   "Parses a lower-case letter."
-  (<?> (satisfy (fn [^Character c] (Character/isLowerCase c)))
+  (<?> (satisfy char/is-lower-case)
        (di18n :lower)))
 
 
 (def upper
   "Parses an upper-case letter."
-  (<?> (satisfy (fn [^Character c] (Character/isUpperCase c)))
+  (<?> (satisfy char/is-upper-case)
        (di18n :upper)))
 
 
 (def white-space
   "Parses a whitespace character."
-  (<?> (satisfy (fn [^Character c] (Character/isWhitespace c)))
+  (<?> (satisfy char/is-white-space)
        (di18n :whitespace)))
 
 
 (def space
   "Parses the space character."
-  (<?> (satisfy (fn [^Character c] (.equals c \space)))
+  (<?> (satisfy char/is-space)
        (di18n :space)))
 
 
 (def tab
   "Parses the tab character."
-  (<?> (satisfy (fn [^Character c] (.equals c \tab)))
+  (<?> (satisfy char/is-tab)
        (di18n :tab)))
 
 
 (def digit
   "Parses a digit."
-  (<?> (satisfy (fn [^Character c] (Character/isDigit c)))
+  (<?> (satisfy char/is-digit)
        (di18n :digit)))
 
 
 (def hex-digit
   "Parses a hexadecimal digit."
   (let [hex (set "0123456789abcdefABCDEF")]
-    (<?> (satisfy (fn [^Character c] (hex c)))
-	 (di18n :hex-digit))))
+    (<?> (satisfy (fn [c] (hex c)))
+         (di18n :hex-digit))))
 
 
 (def oct-digit
   "Parses an octal digit."
   (let [oct (set "01234567")]
-    (<?> (satisfy (fn [^Character c] (oct c)))
-	 (di18n :oct-digit))))
+    (<?> (satisfy (fn [c] (oct c)))
+         (di18n :oct-digit))))
 
 
 (def alpha-num
   "Parses a letter or digit."
-  (<?> (satisfy (fn [^Character c] (Character/isLetterOrDigit c)))
+  (<?> (satisfy char/is-letter-or-digit)
        (di18n :alpha-num)))
 
 
-(defn sym*
-  "Parses a single symbol x (a character)."
-  [^Character x]
-  (<?> (satisfy (fn [^Character c] (.equals c x)))
-       (with-out-str (pr x))))
+#?(:clj  (defn sym*
+           "Parses a single symbol x (a character)."
+           [^Character x]
+           (<?> (satisfy (fn [^Character c] (.equals c x)))
+                (with-out-str (pr x))))
+   :cljs (defn sym*
+           "Parses a single symbol x (a character)."
+           [x]
+           (<?> (satisfy (fn [c] (= c x)))
+                (with-out-str (pr x)))))
 
+#?(:clj  (defn sym-
+           "Parses a single symbol x (a character); not case-sensitive."
+           [^Character x]
+           (<?> (>> (satisfy (fn [^Character c]
+                               (= (Character/toLowerCase x) (Character/toLowerCase c))))
+                    (return x))
+                (with-out-str (pr x))))
+   :cljs (defn sym-
+           "Parses a single symbol x (a character); not case-sensitive."
+           [x]
+           (<?> (>> (satisfy (fn [c]
+                               (= (str/lower-case x) (str/lower-case c))))
+                    (return x))
+                (with-out-str (pr x)))))
 
-(defn sym-
-  "Parses a single symbol x (a character); not case-sensitive."
-  [^Character x]
-  (<?> (>> (satisfy (fn [^Character c]
-		      (= (Character/toLowerCase x) (Character/toLowerCase c))))
-	   (return x))
-       (with-out-str (pr x))))
 
 
 (defn token*
@@ -723,12 +739,12 @@ Addison-Wesley, 1975"
             (if (:ok st)
               (assoc st :value xs)
               (let [in (:input s)]
-	        (if (seq in)
+                (if (seq in)
                   (unexpected (join (take (count xs) in)) s)
-		  (assoc s :value nil :ok false :empty true :error (:error st)))))))
+                  (assoc s :value nil :ok false :empty true :error (:error st)))))))
         (str xs)))
-   ([xs & more]
-    (apply <|> (map token* (cons xs more)))))
+  ([xs & more]
+   (apply <|> (map token* (cons xs more)))))
 
 
 (defn token-
@@ -741,9 +757,9 @@ Addison-Wesley, 1975"
             (if (:ok st)
               (assoc st :value xs)
               (let [in (:input s)]
-	        (if (seq in)
+                (if (seq in)
                   (unexpected (join (take (count xs) in)) s)
-		  (assoc s :value nil :ok false :empty true :error (:error st)))))))
+                  (assoc s :value nil :ok false :empty true :error (:error st)))))))
         (str xs)))
   ([xs & more]
    (apply <|> (map token- (cons xs more)))))
@@ -769,14 +785,14 @@ Addison-Wesley, 1975"
    (apply <|> (map #(word- letter %) (cons cs more)))))
 
 
+
 (defn one-of*
   "Succeeds if the next character is in the supplied string."
-  [^String cs] (satisfy #(>= (.indexOf cs (int %)) 0)))
-
+  [cs] (satisfy #(str/index-of cs %)))
 
 (defn none-of*
   "Succeeds if the next character is not in the supplied string."
-  [^String cs] (satisfy #(neg? (.indexOf cs (int %)))))
+  [cs] (satisfy #(nil? (str/index-of cs %))))
 
 
 (def new-line*
@@ -834,7 +850,8 @@ Addison-Wesley, 1975"
   "Parses a decimal integer delimited by any character that
    is not a decimal digit."
   (<?> (>>= (<+> (many1 digit))
-	    (fn [x] (return (read-string (rmvz x)))))
+            (fn [x] (return #?(:clj (read-string (rmvz x))
+                               :cljs (js/eval (rmvz x))))))
        (di18n :dec-lit)))
 
 
@@ -842,7 +859,8 @@ Addison-Wesley, 1975"
   "Parses an octal integer delimited by any character that
    is not an octal digit."
   (<?> (>>= (<+> (many1 oct-digit))
-	    (fn [x] (return (read-string (str "0" x)))))
+            (fn [x] (return #?(:clj (read-string (str "0" x))
+                               :cljs (js/eval (str "0" x))))))
        (di18n :oct-lit)))
 
 
@@ -850,7 +868,8 @@ Addison-Wesley, 1975"
   "Parses a hex integer delimited by any character that
    is not a hex digit."
   (<?> (>>= (<+> (many1 hex-digit))
-	    (fn [x] (return (read-string (str "0x" x)))))
+            (fn [x] (return #?(:clj (read-string (str "0x" x))
+                               :cljs (js/eval (str "0x" x))))))
        (di18n :hex-lit)))
 
 
@@ -860,8 +879,9 @@ Addison-Wesley, 1975"
    digit. It cannot start with a period; the first period
    found must be followed by at least one digit."
   (<?> (>>= (<+> (many1 digit)
-	         (option ".0" (<*> (sym* \.) (many1 digit))))
-            (fn [x] (return (read-string x))))
+                 (option ".0" (<*> (sym* \.) (many1 digit))))
+            (fn [x] (return #?(:clj (read-string x)
+                               :cljs (js/eval x)))))
        (di18n :float-lit)))
 
 
@@ -939,9 +959,9 @@ Addison-Wesley, 1975"
   [s]
   (let [err (:error s)
         pos (:pos err)
-	src (let [l (:src pos)] (if (empty? l) "" (str l " ")))
-	ln  (:line pos)
-	col (:col pos)]
+        src (let [l (:src pos)] (if (empty? l) "" (str l " ")))
+        ln  (:line pos)
+        col (:col pos)]
     (printf (i18n :err-pos) src ln col)
     (println (get-msg-str err))))
 
@@ -953,12 +973,12 @@ Addison-Wesley, 1975"
   ([p cs] (run p cs nil nil))
   ([p cs src] (run p cs src nil))
   ([p cs src us]
-     (let [s (parse p cs src us)]
-       (if (:ok s)
-	 (pprint (:value s))
-	 (print-error s))
-       (if-let [us (:user s)]
-	 (pprint us)))))
+   (let [s (parse p cs src us)]
+     (if (:ok s)
+       (pprint (:value s))
+       (print-error s))
+     (if-let [us (:user s)]
+       (pprint us)))))
 
 
 (defn run*
@@ -969,28 +989,28 @@ Addison-Wesley, 1975"
   ([p cs src us] (pprint (parse p cs src us))))
 
 
-(defn parse-file
-  "Parses a file; takes an optional encoding and user state,
-   which default to utf-8 and nil. Returns a PState record."
-  ([p f] (parse-file p f "UTF-8" nil))
-  ([p f en] (parse-file p f en nil))
-  ([p f en us] (parse p (slurp f :encoding en) f us)))
+#?(:clj (defn parse-file
+          "Parses a file; takes an optional encoding and user state,
+           which default to utf-8 and nil. Returns a PState record."
+          ([p f] (parse-file p f "UTF-8" nil))
+          ([p f en] (parse-file p f en nil))
+          ([p f en us] (parse p (slurp f :encoding en) f us))))
 
 
-(defn runf
-  "For testing, e.g. at the REPL, with input from files.
-   Prints the results."
-  ([p f] (runf p f "UTF-8" nil))
-  ([p f en] (runf p f en nil))
-  ([p f en us] (run p (slurp f :encoding en) f us)))
+#?(:clj (defn runf
+          "For testing, e.g. at the REPL, with input from files.
+           Prints the results."
+          ([p f] (runf p f "UTF-8" nil))
+          ([p f en] (runf p f en nil))
+          ([p f en us] (run p (slurp f :encoding en) f us))))
 
 
-(defn runf*
-  "For testing, e.g. at the REPL, with input from files.
-   Pretty-prints the results."
-  ([p f] (runf* p f "UTF-8" nil))
-  ([p f en] (runf* p f en nil))
-  ([p f en us] (pprint (parse-file p f en us))))
+#?(:clj (defn runf*
+          "For testing, e.g. at the REPL, with input from files.
+           Pretty-prints the results."
+          ([p f] (runf* p f "UTF-8" nil))
+          ([p f en] (runf* p f en nil))
+          ([p f en us] (pprint (parse-file p f en us)))))
 
 
 ;; +-------------------------------------------------------------+
@@ -1000,10 +1020,10 @@ Addison-Wesley, 1975"
 ;; +-------------------------------------------------------------+
 
 
-(defn- char-pos-x  [x _] x)
-(defn- str-pos-x   [x _] x)
+(defn- char-pos-x [x _] x)
+(defn- str-pos-x [x _] x)
 (defn- merge-err-x [_ _] nil)
-(defn- set-ex-x    [_ x] x)
+(defn- set-ex-x [_ x] x)
 
 
 (defn parse-data
@@ -1013,11 +1033,11 @@ Addison-Wesley, 1975"
   ([p cs] (parse-data p cs nil nil))
   ([p cs src] (parse-data p cs src nil))
   ([p cs src us]
-    (binding [char-pos  char-pos-x
-              str-pos   str-pos-x
-              merge-err merge-err-x
-              set-ex    set-ex-x]
-      (parse p cs src us))))
+   (binding [char-pos  char-pos-x
+             str-pos   str-pos-x
+             merge-err merge-err-x
+             set-ex    set-ex-x]
+     (parse p cs src us))))
 
 
 (defn parse-data-file
@@ -1027,8 +1047,8 @@ Addison-Wesley, 1975"
   ([p f] (parse-data-file p f "UTF-8" nil))
   ([p f en] (parse-data-file p f en nil))
   ([p f en us]
-    (binding [char-pos  char-pos-x
-              str-pos   str-pos-x
-              merge-err merge-err-x
-              set-ex    set-ex-x]
-      (parse-file p f en us))))
+   (binding [char-pos  char-pos-x
+             str-pos   str-pos-x
+             merge-err merge-err-x
+             set-ex    set-ex-x]
+     (parse-file p f en us))))

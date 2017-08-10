@@ -6,28 +6,26 @@
 ;; the terms of this license.
 ;; You must not remove this notice, or any other, from this software.
 
-(ns ^{:doc "The Kern Haskell-style Lexer library.
+(ns ^{:doc "The Kern Shell-style Lexer library.
 
 This namespace is a version of blancas.kern.lexer with the following settings:
 
-comment-start        {-
-comment-end          -}
-comment-line         --
-nested-comments      Yes
+comment-start        None
+comment-end          None
+comment-line         #
+nested-comments      No
 identifier-start     Letter or _
-identifier-letter    Alphanumeric or _ 
+identifier-letter    Alphanumeric or one of: underscore (_), dash (-), dot (.) 
 reserved-names       None
 case-sensitive       Yes
 line-continuation    Backslash
-trim-newline         Yes
-
-Literal values follow the rules of the Haskell programming language."
+trim-newline         No"
       :author "Armando Blancas"}
-  blancas.kern.lexer.haskell-style
-  (:use [blancas.kern.core])
-  (:require [blancas.kern.lexer :as lex]))
+  blancas.kern.lexer.shell-style
+  (:require [blancas.kern.core :as k]
+            [blancas.kern.lexer :as lex]))
 
-(def- rec (lex/make-parsers lex/haskell-style))
+(k/def- rec (lex/make-parsers lex/shell-style-def))
 
 (def trim       (:trim       rec))
 (def lexeme     (:lexeme     rec))
