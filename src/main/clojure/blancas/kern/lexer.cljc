@@ -345,7 +345,7 @@ blancas.kern.lexer
 ;; +-------------------------------------------------------------+
 
 
-(defn- line-comment
+(defn line-comment
   "Parses a line comment."
   [rec]
   (let [start (:comment-line rec)]
@@ -354,7 +354,7 @@ blancas.kern.lexer
                       (fn [_] (k/return nil)))))))
 
 
-(defn- block-nested
+(defn block-nested
   "Parses the contents and end of a nested block comment."
   [rec]
   (let [start (:comment-start rec)
@@ -365,14 +365,14 @@ blancas.kern.lexer
               (i18n :end-comment))))
 
 
-(defn- block-rest
+(defn block-rest
   "Parses the contents and end of a block comment."
   [rec]
   (let [end (:comment-end rec)]
     (k/expect (k/many-till k/any-char (k/token* end)) (i18n :end-comment))))
 
 
-(defn- block-comment
+(defn block-comment
   "Parses a block comment."
   [rec]
   (let [start (:comment-start rec)
@@ -389,7 +389,7 @@ blancas.kern.lexer
 (def space-ascii 32)
 
 
-(k/def- esc-char
+(def esc-char
       "Parses an escape code for a basic char."
       (let [codes (zipmap "btnfr'\"\\/" "\b\t\n\f\r'\"\\/")]
         (>>= (<?> (k/one-of* "btnfr'\"\\/") (i18n :esc-code))
@@ -408,7 +408,7 @@ blancas.kern.lexer
        (i18n :char-lit)))
 
 
-(k/def- esc-oct
+(def esc-oct
       "Parses an octal escape code; the result is the encoded char."
       (>>= (<+> (k/many1 k/oct-digit))
            (fn [x]
@@ -418,14 +418,14 @@ blancas.kern.lexer
                  (k/fail (i18n :bad-octal)))))))
 
 
-(k/def- esc-uni
+(def esc-uni
       "Parses a unicode escape code; the result is the encoded char."
       (>>= (<+> (>> (k/sym* \u) (k/times 4 k/hex-digit)))
            (fn [x] (k/return (aget #?(:clj (Character/toChars (Integer/parseInt x 16))
                                       :cljs (.fromCodePoint js/String (js/parseInt x 16))) 0)))))
 
 
-(defn- java-char
+(defn java-char
   "Parses an unquoted Java character literal. Character c must be escaped."
   [c]
   (<?> (<|> (k/satisfy #(and (not= % c) (not= % \\) (>= (char-code %) space-ascii)))
@@ -435,28 +435,28 @@ blancas.kern.lexer
        (i18n :char-lit)))
 
 
-(k/def- c-esc-char
+(def c-esc-char
       "Parses an escape code for a C char."
       (let [codes (assoc (zipmap "btnfr'\"\\?/" "\b\t\n\f\r'\"\\?/")
                     \a (char 7) \v (char 11) \0 (char 0))]
         (>>= (k/one-of* "btnfr'\"\\?/av0") (fn [x] (k/return (get codes x))))))
 
 
-(k/def- c-esc-uni
+(def c-esc-uni
       "Parses a long unicode escape code; the result is the encoded char."
       (>>= (<+> (>> (k/sym* \U) (k/times 8 k/hex-digit)))
            (fn [x] (k/return (aget #?(:clj (Character/toChars (Integer/parseInt x 16))
                                       :cljs (.fromCodePoint js/String (js/parseInt x 16))) 0)))))
 
 
-(k/def- c-esc-hex
+(def c-esc-hex
       "Parses a hex escape code; the result is the encoded char."
       (>>= (<+> (>> (k/sym- \x) (k/times 2 k/hex-digit)))
            (fn [x] (k/return (aget #?(:clj (Character/toChars (Integer/parseInt x 16))
                                       :cljs (.fromCodePoint js/String (js/parseInt x 16))) 0)))))
 
 
-(defn- c-char
+(defn c-char
   "Parses an unquoted C character literal. Character c must be escaped."
   [c]
   (<?> (<|> (k/satisfy #(and (not= % c) (not= % \\) (>= (char-code %) space-ascii)))
@@ -466,7 +466,7 @@ blancas.kern.lexer
        (i18n :char-lit)))
 
 
-(k/def- h-esc-oct
+(def h-esc-oct
       "Parses a Haskell octal escape code; the result is the encoded char."
       (>>= (<+> (>> (k/sym* \o) (k/many1 k/oct-digit)))
            (fn [x]
@@ -476,7 +476,7 @@ blancas.kern.lexer
                  (k/fail (i18n :bad-oct-h)))))))
 
 
-(k/def- h-esc-dec
+(def h-esc-dec
       "Parses a Haskell decimal escape code; the result is the encoded char."
       (>>= (<+> (k/many1 k/digit))
            (fn [x]
@@ -486,7 +486,7 @@ blancas.kern.lexer
                  (k/fail (i18n :bad-dec-h)))))))
 
 
-(k/def- h-esc-hex
+(def h-esc-hex
       "Parses a Haskell hex escape code; the result is the encoded char."
       (>>= (<+> (>> (k/sym* \x) (k/many1 k/hex-digit)))
            (fn [x]
@@ -496,7 +496,7 @@ blancas.kern.lexer
                  (k/fail (i18n :bad-hex-h)))))))
 
 
-(defn- haskell-char
+(defn haskell-char
   "Parses Haskell character literals."
   [c]
   (<?> (<|> (k/satisfy #(and (not= % c) (not= % \\) (>= (char-code %) space-ascii)))
@@ -506,14 +506,14 @@ blancas.kern.lexer
        (i18n :char-lit)))
 
 
-(defn- char-parser
+(defn char-parser
   "Parses character literals delimited by single quotes."
   [lex f]
   (<?> (lex (k/between (k/sym* \') (<?> (k/sym* \') (i18n :end-char)) (f \')))
        (i18n :char-lit)))
 
 
-(defn- str-parser
+(defn str-parser
   "Parses string literals delimited by double quotes."
   [lex f]
   (<?> (lex (k/between (k/sym* \")
@@ -527,12 +527,12 @@ blancas.kern.lexer
 ;; +-------------------------------------------------------------+
 
 
-(k/def- sign (k/optional (k/one-of* "+-")))
+(def sign (k/optional (k/one-of* "+-")))
 
-(k/def- int-suffix (<|> (<< #?(:clj (k/sym* \N) :cljs (k/skip (k/sym* \N))) (k/not-followed-by k/letter))
+(def int-suffix (<|> (<< #?(:clj (k/sym* \N) :cljs (k/skip (k/sym* \N))) (k/not-followed-by k/letter))
                       (k/not-followed-by (<|> k/letter (k/sym* \.)))))
 
-(k/def- float-suffix (<< (k/optional #?(:clj (k/sym* \M) :cljs (k/skip (k/sym* \M)))) (k/not-followed-by k/letter)))
+(def float-suffix (<< (k/optional #?(:clj (k/sym* \M) :cljs (k/skip (k/sym* \M)))) (k/not-followed-by k/letter)))
 
 
 ;; +-------------------------------------------------------------+

@@ -25,7 +25,7 @@ trim-newline         No"
   (:require [blancas.kern.core :as k]
             [blancas.kern.lexer :as lex]))
 
-(k/def- rec (lex/make-parsers lex/shell-style-def))
+(def rec (lex/make-parsers lex/shell-style-def))
 
 (def trim       (:trim       rec))
 (def lexeme     (:lexeme     rec))

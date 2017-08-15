@@ -38,12 +38,6 @@ Addison-Wesley, 1975"
             [clojure.pprint :refer [pprint]]))
 
 
-(defmacro def-
-  "Same as def, yielding a private def."
-  [name & more]
-  (list* `def (with-meta name (assoc (meta name) :private true)) more))
-
-
 (defmacro defn*
   "Same as def, yielding a dynamic def."
   [name & more]

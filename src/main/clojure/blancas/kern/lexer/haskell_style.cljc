@@ -27,7 +27,7 @@ Literal values follow the rules of the Haskell programming language."
   (:require [blancas.kern.core :as k]
             [blancas.kern.lexer :as lex]))
 
-(k/def- rec (lex/make-parsers lex/haskell-style-def))
+(def rec (lex/make-parsers lex/haskell-style-def))
 
 (def trim       (:trim       rec))
 (def lexeme     (:lexeme     rec))
