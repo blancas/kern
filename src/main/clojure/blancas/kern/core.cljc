@@ -44,13 +44,14 @@ Addison-Wesley, 1975"
   (list* `defn (with-meta name (assoc (meta name) :dynamic true)) more))
 
 
-(defmacro fwd
-  "Delays the evaluation of a parser that was forward (declare)d and
+#?(:clj
+   (defmacro fwd
+          "Delays the evaluation of a parser that was forward (declare)d and
    it has not been defined yet. For use in (def)s of no-arg parsers,
    since the parser expression evaluates immediately."
-  [p]
-  (let [x (gensym)]
-    `(fn [~x] (~p ~x))))
+          [p]
+          (let [x (gensym)]
+            `(fn [~x] (~p ~x)))))
 
 
 #?(:clj
@@ -381,9 +382,9 @@ Addison-Wesley, 1975"
             (assoc s3 :error (merge-err s1 s3))))
         s1))))
 
-
-(defmacro bind
-  "Expands into nested >>= forms and a function body. The pattern:
+#?(:clj
+   (defmacro bind
+     "Expands into nested >>= forms and a function body. The pattern:
 
    (>>= p1 (fn [v1]
    (>>= p2 (fn [v2]
@@ -393,11 +394,11 @@ Addison-Wesley, 1975"
    can be more conveniently be written as:
 
    (bind [v1 p1 v2 p2 ...] (return (f v1 v2 ...)))"
-  [[& bindings] & body]
-  (let [[sym p] (take 2 bindings)]
-    (if (= 2 (count bindings))
-      `(>>= ~p (fn [~sym] ~@body))
-      `(>>= ~p (fn [~sym] (bind ~(drop 2 bindings) ~@body))))))
+     [[& bindings] & body]
+     (let [[sym p] (take 2 bindings)]
+       (if (= 2 (count bindings))
+         `(>>= ~p (fn [~sym] ~@body))
+         `(>>= ~p (fn [~sym] (bind ~(drop 2 bindings) ~@body)))))))
 
 
 (defn >>

@@ -11,7 +11,8 @@
   blancas.kern.expr
   (:require [blancas.kern.core :as k :refer [<|> return >>]]
             [blancas.kern.i18n :as i18n]
-            [blancas.kern.lexer.c-style :as c-style]))
+            [blancas.kern.lexer.c-style :as c-style])
+  #?(:cljs (:require-macros [blancas.kern.core :as k])))
 
 
 ;; +-------------------------------------------------------------+

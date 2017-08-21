@@ -303,41 +303,42 @@ blancas.kern.lexer
          [] nil)
 
 
-(defmacro with-parsers
-  "Binds the parser vars in the kern.lexer namespace to the values in rec."
-  [rec & body]
-  (list 'binding
-        ['blancas.kern.lexer/trim (list :trim rec)
-         'blancas.kern.lexer/lexeme (list :lexeme rec)
-         'blancas.kern.lexer/sym (list :sym rec)
-         'blancas.kern.lexer/new-line (list :new-line rec)
-         'blancas.kern.lexer/one-of (list :one-of rec)
-         'blancas.kern.lexer/none-of (list :none-of rec)
-         'blancas.kern.lexer/token (list :token rec)
-         'blancas.kern.lexer/word (list :word rec)
-         'blancas.kern.lexer/identifier (list :identifier rec)
-         'blancas.kern.lexer/field (list :field rec)
-         'blancas.kern.lexer/char-lit (list :char-lit rec)
-         'blancas.kern.lexer/string-lit (list :string-lit rec)
-         'blancas.kern.lexer/dec-lit (list :dec-lit rec)
-         'blancas.kern.lexer/oct-lit (list :oct-lit rec)
-         'blancas.kern.lexer/hex-lit (list :hex-lit rec)
-         'blancas.kern.lexer/float-lit (list :float-lit rec)
-         'blancas.kern.lexer/bool-lit (list :bool-lit rec)
-         'blancas.kern.lexer/nil-lit (list :nil-lit rec)
-         'blancas.kern.lexer/parens (list :parens rec)
-         'blancas.kern.lexer/braces (list :braces rec)
-         'blancas.kern.lexer/angles (list :angles rec)
-         'blancas.kern.lexer/brackets (list :brackets rec)
-         'blancas.kern.lexer/semi (list :semi rec)
-         'blancas.kern.lexer/comma (list :comma rec)
-         'blancas.kern.lexer/colon (list :colon rec)
-         'blancas.kern.lexer/dot (list :dot rec)
-         'blancas.kern.lexer/semi-sep (list :semi-sep rec)
-         'blancas.kern.lexer/semi-sep1 (list :semi-sep1 rec)
-         'blancas.kern.lexer/comma-sep (list :comma-sep rec)
-         'blancas.kern.lexer/comma-sep1 (list :comma-sep1 rec)]
-        (cons 'do body)))
+#?(:clj
+   (defmacro with-parsers
+          "Binds the parser vars in the kern.lexer namespace to the values in rec."
+          [rec & body]
+          (list 'binding
+                ['blancas.kern.lexer/trim (list :trim rec)
+                 'blancas.kern.lexer/lexeme (list :lexeme rec)
+                 'blancas.kern.lexer/sym (list :sym rec)
+                 'blancas.kern.lexer/new-line (list :new-line rec)
+                 'blancas.kern.lexer/one-of (list :one-of rec)
+                 'blancas.kern.lexer/none-of (list :none-of rec)
+                 'blancas.kern.lexer/token (list :token rec)
+                 'blancas.kern.lexer/word (list :word rec)
+                 'blancas.kern.lexer/identifier (list :identifier rec)
+                 'blancas.kern.lexer/field (list :field rec)
+                 'blancas.kern.lexer/char-lit (list :char-lit rec)
+                 'blancas.kern.lexer/string-lit (list :string-lit rec)
+                 'blancas.kern.lexer/dec-lit (list :dec-lit rec)
+                 'blancas.kern.lexer/oct-lit (list :oct-lit rec)
+                 'blancas.kern.lexer/hex-lit (list :hex-lit rec)
+                 'blancas.kern.lexer/float-lit (list :float-lit rec)
+                 'blancas.kern.lexer/bool-lit (list :bool-lit rec)
+                 'blancas.kern.lexer/nil-lit (list :nil-lit rec)
+                 'blancas.kern.lexer/parens (list :parens rec)
+                 'blancas.kern.lexer/braces (list :braces rec)
+                 'blancas.kern.lexer/angles (list :angles rec)
+                 'blancas.kern.lexer/brackets (list :brackets rec)
+                 'blancas.kern.lexer/semi (list :semi rec)
+                 'blancas.kern.lexer/comma (list :comma rec)
+                 'blancas.kern.lexer/colon (list :colon rec)
+                 'blancas.kern.lexer/dot (list :dot rec)
+                 'blancas.kern.lexer/semi-sep (list :semi-sep rec)
+                 'blancas.kern.lexer/semi-sep1 (list :semi-sep1 rec)
+                 'blancas.kern.lexer/comma-sep (list :comma-sep rec)
+                 'blancas.kern.lexer/comma-sep1 (list :comma-sep1 rec)]
+                (cons 'do body))))
 
 
 ;; +-------------------------------------------------------------+
