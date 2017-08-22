@@ -46,12 +46,12 @@ Addison-Wesley, 1975"
 
 #?(:clj
    (defmacro fwd
-          "Delays the evaluation of a parser that was forward (declare)d and
-   it has not been defined yet. For use in (def)s of no-arg parsers,
-   since the parser expression evaluates immediately."
-          [p]
-          (let [x (gensym)]
-            `(fn [~x] (~p ~x)))))
+     "Delays the evaluation of a parser that was forward (declare)d and
+it has not been defined yet. For use in (def)s of no-arg parsers,
+since the parser expression evaluates immediately."
+     [p]
+     (let [x (gensym)]
+       `(fn [~x] (~p ~x)))))
 
 
 #?(:clj
@@ -64,7 +64,7 @@ Addison-Wesley, 1975"
          (cons (char c) (lazy-seq (char-seq rdr)))))))
 
 
-#(:clj
+#?(:clj
    (defn f->s
      "Gets a character sequence from a file-like object."
      ([f] (slurp f))
@@ -221,7 +221,7 @@ Addison-Wesley, 1975"
         (nil? e1) e2
         (nil? e2) e1
         :else (let [pos1 (:pos e1) pos2 (:pos e2)
-                    r (compare [(:line pos1) (:col pos1)] [(:line pos2) (:col pos2)])]
+                    r    (compare [(:line pos1) (:col pos1)] [(:line pos2) (:col pos2)])]
                 (cond (zero? r) (update-in e1 [:msgs] concat (:msgs e2))
                       (pos? r) e1
                       :else e2))))
@@ -845,7 +845,7 @@ Addison-Wesley, 1975"
   "Parses a decimal integer delimited by any character that
    is not a decimal digit."
   (<?> (>>= (<+> (many1 digit))
-            (fn [x] (return #?(:clj (read-string (rmvz x))
+            (fn [x] (return #?(:clj  (read-string (rmvz x))
                                :cljs (js/eval (rmvz x))))))
        (di18n :dec-lit)))
 
@@ -854,7 +854,7 @@ Addison-Wesley, 1975"
   "Parses an octal integer delimited by any character that
    is not an octal digit."
   (<?> (>>= (<+> (many1 oct-digit))
-            (fn [x] (return #?(:clj (read-string (str "0" x))
+            (fn [x] (return #?(:clj  (read-string (str "0" x))
                                :cljs (js/eval (str "0" x))))))
        (di18n :oct-lit)))
 
@@ -863,7 +863,7 @@ Addison-Wesley, 1975"
   "Parses a hex integer delimited by any character that
    is not a hex digit."
   (<?> (>>= (<+> (many1 hex-digit))
-            (fn [x] (return #?(:clj (read-string (str "0x" x))
+            (fn [x] (return #?(:clj  (read-string (str "0x" x))
                                :cljs (js/eval (str "0x" x))))))
        (di18n :hex-lit)))
 
@@ -875,7 +875,7 @@ Addison-Wesley, 1975"
    found must be followed by at least one digit."
   (<?> (>>= (<+> (many1 digit)
                  (option ".0" (<*> (sym* \.) (many1 digit))))
-            (fn [x] (return #?(:clj (read-string x)
+            (fn [x] (return #?(:clj  (read-string x)
                                :cljs (js/eval x)))))
        (di18n :float-lit)))
 
@@ -957,7 +957,7 @@ Addison-Wesley, 1975"
         src (let [l (:src pos)] (if (empty? l) "" (str l " ")))
         ln  (:line pos)
         col (:col pos)]
-    (printf (i18n :err-pos) src ln col)
+    (print (fmt :err-pos src ln col))
     (println (get-msg-str err))))
 
 
@@ -1035,15 +1035,16 @@ Addison-Wesley, 1975"
      (parse p cs src us))))
 
 
-(defn parse-data-file
-  "Works like (parse-file) but with error diagnostics disabled for
-   better performance. It's intended for data files that can be
-   assumed to be correct or its diagnosis postponed."
-  ([p f] (parse-data-file p f "UTF-8" nil))
-  ([p f en] (parse-data-file p f en nil))
-  ([p f en us]
-   (binding [char-pos  char-pos-x
-             str-pos   str-pos-x
-             merge-err merge-err-x
-             set-ex    set-ex-x]
-     (parse-file p f en us))))
+#?(:clj
+   (defn parse-data-file
+     "Works like (parse-file) but with error diagnostics disabled for
+      better performance. It's intended for data files that can be
+      assumed to be correct or its diagnosis postponed."
+     ([p f] (parse-data-file p f "UTF-8" nil))
+     ([p f en] (parse-data-file p f en nil))
+     ([p f en us]
+      (binding [char-pos  char-pos-x
+                str-pos   str-pos-x
+                merge-err merge-err-x
+                set-ex    set-ex-x]
+        (parse-file p f en us)))))

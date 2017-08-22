@@ -11,7 +11,8 @@
 blancas.kern.lexer
   (:require [blancas.kern.core :refer [<|> <?> >> >>= <:> <+> << <*>] :as k]
             [blancas.kern.i18n :refer [i18n fmt]]
-            [clojure.string :refer [lower-case]]))
+            [clojure.string :refer [lower-case]])
+  #?(:cljs (:require-macros [blancas.kern.core :as k])))
 
 
 ;; +-------------------------------------------------------------+
