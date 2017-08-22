@@ -103,8 +103,8 @@ since the parser expression evaluates immediately."
 ;; line  - the line into the input stream.
 ;; col   - the column into the line.
 (defrecord PPosition [src line col]
-  Comparable
-  (compareTo [this other]
+  #?(:clj Comparable :cljs IComparable)
+  (#?(:clj compareTo :cljs -compare) [this other]
     (let [result (compare line (:line other))]
       (if (zero? result)
         (compare col (:col other))
