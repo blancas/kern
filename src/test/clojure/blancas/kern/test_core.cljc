@@ -7,7 +7,7 @@
 ;; You must not remove this notice, or any other, from this software.
 
 (ns blancas.kern.test-core
-  (:require [blancas.kern.core :as k :refer [parse bind value return fail
+  (:require [blancas.kern.core :as k :refer [parse value return fail
                                              >>= >> <*>  <?> <|> <+> << <:> <$>
                                              letter digit   satisfy many space new-line* tab
                                              sym* token* token- word* one-of* none-of* eof
@@ -15,7 +15,9 @@
                                              sep-end-by sep-end-by1 between alpha-num times dec-num]]
             [blancas.kern.char :as char]
             [clojure.test :refer [deftest is testing]]
-            [blancas.kern.char :as char]))
+            [blancas.kern.char :as char])
+  #?(:clj (:require [blancas.kern.core :refer [bind]])
+     :cljs (:require-macros [blancas.kern.core :refer [bind]])))
 
 (defn check-pos [line col pos]
   (is (= line (:line pos)))

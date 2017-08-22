@@ -10,7 +10,8 @@
   (:require [blancas.kern.core :as k :refer [parse >> >>= <*>]]
             [blancas.kern.lexer.basic :as lex-basic]
             [clojure.test :refer [deftest is testing]]
-            [blancas.kern.lexer :as lex]))
+            [blancas.kern.lexer :as lex])
+  #?(:cljs (:require-macros [blancas.kern.lexer :as lex])))
 
 ;; Utility functions.
 

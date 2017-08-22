@@ -1,4 +1,4 @@
-(defproject ru.prepor/kern "1.1.0"
+(defproject ru.prepor/kern "1.2.0-SNAPSHOT"
   :description "A Parser Combinators Library"
   :license {:name "Eclipse Public License"
 	    :url "http://www.eclipse.org/legal/epl-v10.html"}
