@@ -8,49 +8,49 @@
 
 (ns ^{:doc "Support for a simple i18n scheme."
       :author "Armando Blancas"}
-  blancas.kern.i18n)
+  blancas.kern.i18n
+  #?(:cljs (:require
+             [goog.string :refer [format]]
+             [goog.string.format])))
 
 
 (def ^:private default
-  {:comma       ", "
-   :eof         "end of input"
-   :letter      "letter"
-   :lower       "lowercase letter"
-   :upper       "uppercase letter"
-   :whitespace  "whitespace"
-   :space       "space"
-   :new-line    "new line"
-   :tab         "tab"
-   :digit       "digit"
-   :hex-digit   "hexadecimal digit"
-   :oct-digit   "octal digit"
-   :alpha-num   "letter or digit"
-   :end-comment "end of comment"
-   :char-lit    "character literal"
-   :end-char    "end of character literal"
-   :esc-code-b  "escaped code: b, t, n, f, r, ', \\"
-   :esc-code-c  "escaped code: b, t, n, f, r, ', \\, ?, a, v, 0, ooo, uhhhh, xhh"
-   :esc-code-j  "escaped code: b, t, n, f, r, ', \\, ooo, hhhh"
-   :esc-code-h  "escaped code: b, t, n, f, r, ', \\, ?, a, v, 0, nnn, onnn, xnnnn"
-   :string-lit  "string literal"
-   :end-string  "end of string literal"
-   :end-of      "end of "
-   :dec-lit     "decimal literal"
-   :oct-lit     "octal literal"
-   :hex-lit     "hex literal"
-   :float-lit   "floating-point literal"})
-
-(def default-fmt
-  {:unexpected #(str "unexpected " %)
-   :expecting  #(str "expecting " %)
-   :or         #(str " or " %)
-   :err-pos    #(str %1 " line " %2 " column " %3 "\n")
-   :reserved   #(str % " is a reserved name")})
+  { :unexpected   "unexpected %s"
+   :expecting    "expecting %s"
+   :comma        ", "
+   :or           " or %s"
+   :err-pos      "%sline %d column %d\n"
+   :eof          "end of input"
+   :letter       "letter"
+   :lower        "lowercase letter"
+   :upper        "uppercase letter"
+   :whitespace   "whitespace"
+   :space        "space"
+   :new-line     "new line"
+   :tab          "tab"
+   :digit        "digit"
+   :hex-digit    "hexadecimal digit"
+   :oct-digit    "octal digit"
+   :alpha-num    "letter or digit"
+   :end-comment  "end of comment"
+   :char-lit     "character literal"
+   :end-char     "end of character literal"
+   :esc-code-b   "escaped code: b, t, n, f, r, ', \\"
+   :esc-code-c   "escaped code: b, t, n, f, r, ', \\, ?, a, v, 0, ooo, uhhhh, xhh"
+   :esc-code-j   "escaped code: b, t, n, f, r, ', \\, ooo, hhhh"
+   :esc-code-h   "escaped code: b, t, n, f, r, ', \\, ?, a, v, 0, nnn, onnn, xnnnn"
+   :string-lit   "string literal"
+   :end-string   "end of string literal"
+   :end-of       "end of "
+   :dec-lit      "decimal literal"
+   :oct-lit      "octal literal"
+   :hex-lit      "hex literal"
+   :float-lit    "floating-point literal"
+   :reserved     "%s is a reserved name"
+   })
 
 
 (def ^:private text (atom default))
-
-(def ^:private fmt-text (atom default-fmt))
 
 
 (defn i18n-merge
@@ -67,7 +67,7 @@
 (defn fmt
   "Formats a string with a key and more arguments."
   [k & more]
-  (apply (k @fmt-text) more))
+  (apply format (i18n k) more))
 
 
 (defn di18n
@@ -80,4 +80,4 @@
   "Returns a Delay instance with a string formatted with a key and more
    arguments. Useful in (def)'ed expressions that evaluate too soon."
   [k & more]
-  (delay (apply fmt k more)))
+  (delay (apply format (i18n k) more)))
