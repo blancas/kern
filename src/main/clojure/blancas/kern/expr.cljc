@@ -9,8 +9,10 @@
 (ns ^{:doc "Support for the evaluation of expressions."
       :author "Armando Blancas"}
   blancas.kern.expr
-  (:use [blancas.kern core i18n]
-	[blancas.kern.lexer.c-style]))
+  (:require [blancas.kern.core :as k :refer [<|> return >>]]
+            [blancas.kern.i18n :as i18n]
+            [blancas.kern.lexer.c-style :as c-style])
+  #?(:cljs (:require-macros [blancas.kern.core :as k])))
 
 
 ;; +-------------------------------------------------------------+
@@ -23,9 +25,9 @@
    another instance of p, then applies the operator on both values.
    The operator associates to the left."
   [p op]
-  (letfn [(rest [a] (<|> (bind [f op b p] (rest (f a b)))
+  (letfn [(rest [a] (<|> (k/bind [f op b p] (rest (f a b)))
                          (return a)))]
-    (bind [a p] (rest a))))
+    (k/bind [a p] (rest a))))
 
 
 (defn chainl
@@ -39,8 +41,8 @@
    calls itself to compute the rest of the expression, then it applies
    the operator on both values. The operator associates to the right."
   [p op]
-  (bind [a p]
-    (<|> (bind [f op b (chainr1 p op)] (return (f a b)))
+  (k/bind [a p]
+    (<|> (k/bind [f op b (chainr1 p op)] (return (f a b)))
 	 (return a))))
 
 
@@ -55,10 +57,10 @@
    another p, then makes an AST node with the operator on both values.
    The operator associates to the left."
   [tok p op]
-  (letfn [(rest [a] (<|> (bind [f op b p]
+  (letfn [(rest [a] (<|> (k/bind [f op b p]
 			   (rest {:token tok :op f :left a :right b}))
                          (return a)))]
-    (bind [a p] (rest a))))
+    (k/bind [a p] (rest a))))
 
 
 (defn chainl*
@@ -74,8 +76,8 @@
    an AST node with the operator on both values. The operator associates
    to the right."
   [tok p op]
-  (bind [a p]
-	(<|> (bind [f op b (chainr1* tok p op)]
+  (k/bind [a p]
+	(<|> (k/bind [f op b (chainr1* tok p op)]
 	       (return {:token tok :op f :left a :right b}))
 	 (return a))))
 
@@ -91,8 +93,8 @@
   "Parses zero or more operators op before an operand p. It applies
    the parsed functions to the operand in reverse order of parsing."
   [p op]
-  (<|> (bind [f op a (prefix1 p op)] (return (f a)))
-       (bind [a p] (return a))))
+  (<|> (k/bind [f op a (prefix1 p op)] (return (f a)))
+       (k/bind [a p] (return a))))
 
 
 (defn prefix
@@ -106,8 +108,8 @@
    AST node for each parsed function, where the operand is a node
    for a value or a further application of a prefix operator."
   [tok p op]
-  (<|> (bind [f op a (prefix1* tok p op)] (return {:token tok :op f :right a}))
-       (bind [a p] (return a))))
+  (<|> (k/bind [f op a (prefix1* tok p op)] (return {:token tok :op f :right a}))
+       (k/bind [a p] (return a))))
 
 
 (defn prefix*
@@ -120,9 +122,9 @@
   "Parses an operand p followed by zero or more operators. It applies the
    parsed functions to the operand or the result of a previous application."
   [p op]
-  (letfn [(rest [a] (<|> (bind [f op] (rest (f a)))
+  (letfn [(rest [a] (<|> (k/bind [f op] (rest (f a)))
                          (return a)))]
-    (bind [a p] (rest a))))
+    (k/bind [a p] (rest a))))
 
 
 (defn postfix
@@ -136,9 +138,9 @@
    an AST node for each parsed function, where the operand is a node
    for a value or a previous  application of a postfix operator."
   [tok p op]
-  (letfn [(rest [a] (<|> (bind [f op] (rest {:token tok :op f :left a}))
+  (letfn [(rest [a] (<|> (k/bind [f op] (rest {:token tok :op f :left a}))
                          (return a)))]
-    (bind [a p] (rest a))))
+    (k/bind [a p] (rest a))))
 
 
 (defn postfix*
@@ -154,38 +156,38 @@
 
 (def pow-op
   "Parses the POW operator."
-  (>> (sym \^) (return #(Math/pow %1 %2))))
+  (>> (c-style/sym \^) (return #(Math/pow %1 %2))))
 
 
 (def uni-op
   "Unary prefix operator: logical not or numeric minus."
-  (bind [op (one-of "!-")]
+  (k/bind [op (c-style/one-of "!-")]
     (return ({\! not \- -} op))))
 
 
 (def mul-op
   "Multiplicative operator: multiplication, division, or modulo."
-  (bind [op (one-of "*/%")] 
+  (k/bind [op (c-style/one-of "*/%")]
     (return ({\* * \/ quot \% mod} op))))
 
 
 (def add-op
   "Additive operator: addition or subtraction."
-  (bind [op (one-of "+-")] 
+  (k/bind [op (c-style/one-of "+-")]
     (return ({\+ + \- -} op))))
 
 
 (def rel-op
   "Parses one of the relational operators."
-  (bind [op (token "==" "!=" ">=" "<=" ">" "<")]
+  (k/bind [op (c-style/token "==" "!=" ">=" "<=" ">" "<")]
     (return ({"==" = "!=" not= ">=" >= "<=" <= ">" > "<" <} op))))
 
 
 (def and-op
   "Parses the logical AND operator."
-  (>> (token "&&") (return #(and %1 %2))))
+  (>> (c-style/token "&&") (return #(and %1 %2))))
 
 
 (def or-op
   "Parses the logical OR operator."
-  (>> (token "||") (return #(or %1 %2))))
+  (>> (c-style/token "||") (return #(or %1 %2))))

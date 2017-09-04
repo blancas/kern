@@ -22,10 +22,10 @@ line-continuation    Backslash
 trim-newline         No"
       :author "Armando Blancas"}
   blancas.kern.lexer.shell-style
-  (:use [blancas.kern.core])
-  (:require [blancas.kern.lexer :as lex]))
+  (:require [blancas.kern.core :as k]
+            [blancas.kern.lexer :as lex]))
 
-(def- rec (lex/make-parsers lex/shell-style))
+(def rec (lex/make-parsers lex/shell-style-def))
 
 (def trim       (:trim       rec))
 (def lexeme     (:lexeme     rec))

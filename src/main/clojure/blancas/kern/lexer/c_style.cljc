@@ -24,10 +24,10 @@ trim-newline         Yes
 Literal values follow the rules of the C programming language."
       :author "Armando Blancas"}
   blancas.kern.lexer.c-style
-  (:use [blancas.kern.core])
-  (:require [blancas.kern.lexer :as lex]))
+  (:require [blancas.kern.core :as k]
+            [blancas.kern.lexer :as lex]))
 
-(def- rec (lex/make-parsers lex/c-style))
+(def rec (lex/make-parsers lex/c-style-def))
 
 (def trim       (:trim       rec))
 (def lexeme     (:lexeme     rec))

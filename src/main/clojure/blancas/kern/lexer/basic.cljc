@@ -22,10 +22,10 @@ line-continuation    Backslash
 trim-newline         Yes"
       :author "Armando Blancas"}
   blancas.kern.lexer.basic
-  (:use [blancas.kern.core])
-  (:require [blancas.kern.lexer :as lex]))
+  (:require [blancas.kern.core :as k]
+            [blancas.kern.lexer :as lex]))
 
-(def- rec (lex/make-parsers lex/basic-def))
+(def rec (lex/make-parsers lex/basic-def))
 
 (def trim       (:trim       rec))
 (def lexeme     (:lexeme     rec))

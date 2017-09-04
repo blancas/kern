@@ -1,5 +1,7 @@
+/.idea
 target
 codox
+.DS_Store
 *.jar
 *.class
 .lein*
@@ -7,3 +9,6 @@ codox
 \#*
 .project
 .classpath
+
+/resources
+/out

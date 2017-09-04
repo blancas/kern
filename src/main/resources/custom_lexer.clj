@@ -15,7 +15,7 @@
     :trim-newline        false))
 
 ;; Then make the customized parsers.
-(def- rec (lex/make-parsers hoc-style))
+(def rec (lex/make-parsers hoc-style))
 
 ;; For easy access, store the parsers in vars.
 (def trim       (:trim       rec))
