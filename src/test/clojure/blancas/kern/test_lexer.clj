@@ -1929,6 +1929,44 @@
 	      (:ok    s1)  =>  false)))))
 
 
+(deftest test-0880
+  (let [rec (lex/make-parsers (assoc lex/haskell-style :trim-newline false))]
+    (lex/with-parsers rec
+      (let [in "foo bar -- this is a line comment\n\n\nbaz"
+	    s1 (parse (many1 lex/identifier) in)]
+        (fact "line comment consumes until the end of the line"
+	      (:input s1)  =>  (seq "\n\nbaz")
+	      (:value s1)  =>  ["foo" "bar"]
+	      (:ok    s1)  =>  true
+	      (:empty s1)  =>  false)))))
+
+
+(deftest test-0885
+  (let [rec (lex/make-parsers (assoc lex/haskell-style :trim-newline false))]
+    (lex/with-parsers rec
+      (let [in "foo bar -- this is a line comment\n\n\nbaz"
+	    s1 (parse (<*> (many1 lex/identifier)
+                           (skip-many white-space)
+                           (many1 lex/identifier)) in)]
+        (fact "explicit whitespace removal with :trim-newline false"
+	      (:input s1)  =>  empty?
+	      (:value s1)  =>  [["foo" "bar"] nil ["baz"]]
+	      (:ok    s1)  =>  true
+	      (:empty s1)  =>  false)))))
+
+
+(deftest test-0890
+  (let [rec (lex/make-parsers lex/haskell-style)]
+    (lex/with-parsers rec
+      (let [in "foo bar -- this is a line comment\n\n\nbaz\nfoobar"
+	    s1 (parse (many1 lex/identifier) in)]
+        (fact "line comment is treated as whitespace"
+	      (:input s1)  =>  empty?
+	      (:value s1)  =>  ["foo" "bar" "baz" "foobar"]
+	      (:ok    s1)  =>  true
+	      (:empty s1)  =>  false)))))
+
+
 ;; +-------------------------------------------------------------+
 ;; |                    Repeating Patterns.                      |
 ;; +-------------------------------------------------------------+
