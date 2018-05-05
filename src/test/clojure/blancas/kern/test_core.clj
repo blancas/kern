@@ -3439,3 +3439,73 @@
 	  (:value s1)  =>  9.876543219876544E7
 	  (:ok    s1)  =>  true
 	  (:empty s1)  =>  false)))
+
+
+;; +-------------------------------------------------------------+
+;; |                     Parsing functions.                      |
+;; +-------------------------------------------------------------+
+
+
+(deftest test-1300
+  (let [p1 (>> (put-state 0)
+               (skip-many
+                 (bind [x any-char]
+		   (if (= x \newline) (modify-state inc) (return nil)))))
+	s1 (parse-file p1 "src/test/resources/test-1300.txt")]
+    (fact "Parse from a text file: put-state, modify-state"
+	  (:input s1)  =>  empty?
+	  (:value s1)  =>  nil
+	  (:ok    s1)  =>  true
+	  (:user  s1)  =>  12       ; text file has a trailing newline.
+	  (:empty s1)  =>  false)))
+
+
+(deftest test-1310
+  (let [file "src/test/resources/test-1310.txt"
+        in (slurp file)
+	s1 (parse-file (word* letter "proc") file)
+	em (get-msg-str (:error s1))]
+    (fact "Parse from a text file -- get an error"
+	  (:input s1)  =>  (seq in)
+	  (:value s1)  =>  nil
+	  (:ok    s1)  =>  false
+	  (:empty s1)  =>  true
+	           em  => "unexpected e\nexpecting end of proc")))
+
+(deftest test-1320
+  (let [file "src/test/resources/test-1310.txt"
+	s1 (parse-file (word* letter "proc") file)
+        pe (with-out-str (print-error s1))]
+    (fact "Parse from a file and call print-error"
+      pe  => (str "src/test/resources/test-1310.txt line 1 column 6\n"
+                  "unexpected e\n"
+                  "expecting end of proc\n"))))
+
+
+(deftest test-1330
+  (let [file (java.io.FileReader. "src/test/resources/test-1310.txt")
+	s1 (parse-file (word* letter "proc") file)
+	em (get-msg-str (:error s1))]
+    (fact "Read from a file reader"
+	  (:empty s1)  =>  true
+	           em  => "unexpected e\nexpecting end of proc")))
+
+
+(deftest test-1340
+  (let [file (java.io.FileReader. "src/test/resources/test-1310.txt")
+	s1 (parse-file (word* letter "proc") file)
+        pe (with-out-str (print-error s1))]
+    (fact "Read from a file reader and call print-error"
+      pe  => (str "line 1 column 6\n"
+                  "unexpected e\n"
+                  "expecting end of proc\n"))))
+
+
+(deftest test-1350
+  (let [file (java.io.File. "src/test/resources/test-1310.txt")
+	s1 (parse-file (word* letter "proc") file)
+        pe (with-out-str (print-error s1))]
+    (fact "Read from a java.io.File instance and call print-error"
+      pe  => (str "line 1 column 6\n"
+                  "unexpected e\n"
+                  "expecting end of proc\n"))))
