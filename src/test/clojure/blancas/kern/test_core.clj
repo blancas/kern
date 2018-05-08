@@ -1401,6 +1401,108 @@
 	  (:error s1)  =>  nil)))
 
 
+(deftest test-0385-35
+  (let [p1 (bind [x letter] (Character/toUpperCase x))
+	s1 (parse p1 "xyz")]
+    (fact "bind with autolift - advances one char"
+	  (:input s1)  =>  [\y \z]
+	  (:value s1)  =>  \X
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false
+	  (:user  s1)  =>  nil
+	  (:error s1)  =>  nil
+	  (:pos   s1)  =>  (contains {:line 1 :col 2}))))
+
+
+(deftest test-0385-40
+  (let [p1 (bind [x digit y digit]
+	     (Integer/parseInt (str x y)))
+	s1 (parse p1 "50113")]
+    (fact "bind with autolift - advances two chars"
+	  (:input s1)  =>  [\1 \1 \3]
+	  (:value s1)  =>  50
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false
+	  (:user  s1)  =>  nil
+	  (:error s1)  =>  nil
+	  (:pos   s1)  =>  (contains {:line 1 :col 3}))))
+
+
+(deftest test-0385-45
+  (let [p1 (bind [_ (sym* \()
+		  s (<+> (many1 digit))
+		  _ (sym* \))]
+	     (* (Integer/parseInt s) -1))
+	s1 (parse p1 "(50113)")]
+    (fact "bind with autolift - reads a negative number in parens, as in accounting"
+	  (:input s1)  =>  empty?
+	  (:value s1)  =>  -50113
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false
+	  (:user  s1)  =>  nil
+	  (:error s1)  =>  nil)))
+
+
+(deftest test-0385-50
+  (let [p1 (bind [x letter]
+	     (if (= x \x)
+	       (bind [y (sym* \Y)
+		      z (sym* \Z)] "first")
+	       (bind [n (many1 digit)] 5005)))
+	s1 (parse p1 "xYZ")]
+    (fact "bind with autolift - uses nested bind inside the first function body"
+	  (:input s1)  =>  empty?
+	  (:value s1)  =>  "first"
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false
+	  (:user  s1)  =>  nil
+	  (:error s1)  =>  nil)))
+
+
+(deftest test-0385-55
+  (let [p1 (bind [x letter]
+	     (if (= x \x)
+	       (bind [y (sym* \Y)
+		      z (sym* \Z)] "first")
+	       (bind [n (many1 digit)] 666)))
+	s1 (parse p1 "A10002450")]
+    (fact "bind with autolift - uses nested bind inside the first function body"
+	  (:input s1)  =>  empty?
+	  (:value s1)  =>  666
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false
+	  (:user  s1)  =>  nil
+	  (:error s1)  =>  nil)))
+
+
+(deftest test-0385-60
+  (let [p1 (<|> (bind [x (many1 digit)] true)
+		(bind [x (many1 letter)] false))
+	s1 (parse p1 "FALSE")]
+    (fact "bind with autolift - the first bind fails, the second succeeds"
+	  (:input s1)  =>  empty?
+	  (:value s1)  =>  false
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  false
+	  (:user  s1)  =>  nil
+	  (:error s1)  =>  nil)))
+
+
+(deftest test-0385-65
+  (let [p1 (bind [x "X"
+                  y "Y"]
+             {:x x, :y y})
+	s1 (parse p1 "xyz")]
+    (fact "bind with autolift - advances one char"
+	  (:input s1)  =>  [\x \y \z]
+	  (:value s1)  =>  {:x "X", :y "Y"}
+	  (:ok    s1)  =>  true
+	  (:empty s1)  =>  true
+	  (:user  s1)  =>  nil
+	  (:error s1)  =>  nil
+	  (:pos   s1)  =>  (contains {:line 1 :col 1}))))
+
+
 (deftest test-0390
   (let [p1 (>> (sym* \+) digit)
 	s1 (parse p1 "+1")]

@@ -368,15 +368,16 @@ Addison-Wesley, 1975"
 
 
 (defn >>=
-  "Binds parser p to function f which gets p's value and returns
-   a new parser. Function p must define a single parameter. The
-   argument it receives is the value parsed by p, not ps' return
-   value, which is a parser state record."
+  "Binds parser p to function f which gets p's parsed value and
+   returns a new parser. Both p and f must take a single argument.
+   If p or f's return value are not functions they will be lifted
+   into the perser monad."
   [p f]
   (fn [s]
-    (let [s1 (p s)]
+    (let [s1 ((if (fn? p) p (return p)) s)]
       (if (:ok s1)
-	(let [s2 ((f (:value s1)) s1)
+	(let [rv (f (:value s1))
+              s2 ((if (fn? rv) rv (return rv)) s1)
 	      s3 (assoc s2 :empty (and (:empty s1) (:empty s2)))]
 	  (if (:ok s3)
 	    s3

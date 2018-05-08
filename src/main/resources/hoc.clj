@@ -28,25 +28,25 @@ Prentice-Hall, 1983"}
 
 (def number
   (bind [d float-lit]
-    (return {:token :NUMBER :value d})))
+    {:token :NUMBER :value d}))
 
 (def string-literal
   (bind [s string-lit]
-    (return {:token :STRING :value s})))
+    {:token :STRING :value s}))
 
 (def ident 
   (bind [id identifier]
-    (return {:token :IDENT :value id})))
+    {:token :IDENT :value id}))
 
 (def argument
   (bind [_ (sym* \$) idx dec-lit]
-    (return {:token :ARGMNT :value idx})))
+    {:token :ARGMNT :value idx}))
 
 (def rvalue 
   (bind [id identifier es (option :nil (parens (comma-sep expr)))]
     (if (= es :nil)
-      (return {:token :IDENT :value id})
-      (return {:token :FUNCALL :name id :args es}))))
+      {:token :IDENT :value id}
+      {:token :FUNCALL :name id :args es})))
 
 (def ending (<|> (skip new-line trim) eof))
 
@@ -68,28 +68,28 @@ Prentice-Hall, 1983"}
 
 (def block-stmt
   (braces (bind [_ new-line ss (many (<< (fwd stmt) ending))]
-            (return {:token :BLOCK :seq ss}))))
+            {:token :BLOCK :seq ss})))
 
 (def loop-stmt
   (bind [_ (word "while") e (parens expr) s stmt]
-    (return {:token :LOOP :test e :body s})))
+    {:token :LOOP :test e :body s}))
 
 (def cond-stmt
   (bind [_ (word "if") e (parens expr) s stmt
 	 a (optional (>> (word "else") stmt))]
-    (return {:token :COND :test e :body s :alt a})))
+    {:token :COND :test e :body s :alt a}))
 
 (def read-stmt
   (bind [_ (word "read") id (parens identifier)]
-    (return {:token :READ :arg id})))
+    {:token :READ :arg id}))
 
 (def print-stmt
   (bind [_ (word "print") e (comma-sep expr)]
-    (return {:token :PRINT :args e})))
+    {:token :PRINT :args e}))
 
 (def return-stmt
   (bind [_ (word "return") e (optional expr)]
-    (return {:token :RETURN :value e})))
+    {:token :RETURN :value e}))
 
 (def void-stmt (predict new-line))
 
@@ -98,7 +98,7 @@ Prentice-Hall, 1983"}
 
 (def func
   (bind [t (word "func" "proc") i identifier _ (sym \() _ (sym \)) s stmt]
-    (return {:token (keyword (upper-case t)) :name i :body s})))
+    {:token (keyword (upper-case t)) :name i :body s}))
 
 (def parse-hoc (>> trim (many1 (<< (<|> func stmt) ending))))
 
