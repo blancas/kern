@@ -32,9 +32,8 @@ Addison-Wesley, 1975"
   blancas.kern.core
   (:refer-clojure :exclude [cat])
   (:require [blancas.kern.i18n :refer :all]
-            [clojure.string :refer [join]]
-            [clojure.java.io :refer [reader]]
-            [clojure.pprint :refer [pprint]]))
+            [clojure.pprint :refer [pprint]]
+            [clojure.string :refer [join]]))
 
 
 (defmacro def-
@@ -100,17 +99,24 @@ Addison-Wesley, 1975"
 (def- err-expect   2) ;; Used to show a message of what's expected.
 (def- err-message  3) ;; Used for any kind of message from client code.
 
+;; babashka doesn't support implementing Java interfaces on records, so we
+;; introduce a protocol for it
+#?(:bb
+   (defprotocol IComparable
+     (compareTo [this other])))
+
 ;; Keeps the position of the input:
 ;; src   - a string that identifies the source of input
 ;; line  - the line into the input stream.
 ;; col   - the column into the line.
 (defrecord PPosition [src line col]
-  Comparable
-    (compareTo [this other]
-      (let [result (compare line (:line other))]
-        (if (zero? result)
-          (compare col (:col other))
-          result))))
+  ;; removed for babashka, not sure if this will cause issues
+  #?(:bb IComparable :clj Comparable)
+  (compareTo [_ other]
+    (let [result (compare line (:line other))]
+      (if (zero? result)
+        (compare col (:col other))
+        result))))
 
 ;; A PMessage consists of:
 ;; type  - One of the error types listed above.
@@ -222,7 +228,8 @@ Addison-Wesley, 1975"
   (cond (and (nil? e1) (nil? e2)) nil
 	(nil? e1) e2
 	(nil? e2) e1
-	:else (let [r (compare (:pos e1) (:pos e2))]
+	:else (let [r (#?(:bb compareTo :clj compare)
+                       (:pos e1) (:pos e2))]
 	        (cond (zero? r) (update-in e1 [:msgs] concat (:msgs e2))
 		      (pos? r) e1
 		      :else e2))))
